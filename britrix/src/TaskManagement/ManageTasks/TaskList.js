@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Fetchdata from "../../Component/FetchData";
 import { useNavigate } from "react-router-dom";
 import LoadingCard from "../../Component/ComponentElement/LoadingCard";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
 
 function TaskList() {
   useEffect(() => {
@@ -12,9 +13,9 @@ function TaskList() {
   const [FilterData, setFilterData] = useState([]);
   const [Mes, setMes] = useState("");
   const [CardDisplay, setCardDispay] = useState("d-flex");
-  const [Month, setMonth] = useState('')
-  const [Type, setType] = useState('')
-  const [Priority, setPriority] = useState('')
+  const [Month, setMonth] = useState("");
+  const [Type, setType] = useState("");
+  const [Priority, setPriority] = useState("");
   const Navigate = useNavigate();
 
   const GetTaskList = async () => {
@@ -27,6 +28,7 @@ function TaskList() {
       if (response.length < 1) {
         setMes("No Record Found");
         setCardDispay("d-none");
+        handelOpenModelBox();
       } else {
         setData(response);
         setFilterData(response);
@@ -36,6 +38,7 @@ function TaskList() {
     } catch (err) {
       setCardDispay("d-none");
       setMes(err.message);
+      handelOpenModelBox();
     }
   };
 
@@ -48,15 +51,16 @@ function TaskList() {
         { TaskID }
       );
       setMes(response.mes);
+      handelOpenModelBox();
       GetTaskList();
-      setMes("");
     } catch (error) {
       setMes(error.message);
+      handelOpenModelBox();
     }
   };
 
   const handlePriorityData = (v) => {
-    setPriority(v)
+    setPriority(v);
     const filter = FilterData.filter((e) => {
       return e.Priority === v;
     });
@@ -64,30 +68,40 @@ function TaskList() {
   };
 
   const handleMonthData = (m) => {
-    setMonth(m)
+    setMonth(m);
     const filter = FilterData.filter((e) => {
       return e.Month === m;
     });
     setFilterData(filter);
-  }
+  };
   const handleTaskTypeData = (t) => {
-    setType(t)
+    setType(t);
     const filter = FilterData.filter((e) => {
       return e.Type === t;
     });
     setFilterData(filter);
-  }
+  };
 
   const clearAll = () => {
-    setPriority('')
-    setMonth('')
-    setType('')
+    setPriority("");
+    setMonth("");
+    setType("");
     setFilterData(Data);
   };
 
   const handleUpdateUser = (obj) => {
     Navigate("/services/task/update", { state: obj });
     // console.log(obj);
+  };
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  };
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
   };
 
   return (
@@ -110,15 +124,20 @@ function TaskList() {
           CardDisplay === "d-none" ? "d-flex" : "d-none"
         } justify-content-center gap-2`}
       >
+        <dialog
+          className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+          id="dialog"
+        >
+          <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        </dialog>
         <div>
-     
           <select
             className="form-control shadow-sm"
             onChange={(e) => handlePriorityData(e.target.value)}
             value={Priority}
           >
             <option className="dropdown-item" value="">
-              --   Priority --
+              -- Priority --
             </option>
             <option className="dropdown-item" value="High">
               High
@@ -131,34 +150,34 @@ function TaskList() {
             </option>
           </select>
         </div>
-        <div><input
+        <div>
+          <input
             className="form-control shadow-sm"
             onChange={(e) => handleMonthData(e.target.value)}
             type="month"
             value={Month}
-          /></div>
-          <div>
-     
-     <select
-       className="form-control shadow-sm"
-       onChange={(e) => handleTaskTypeData(e.target.value)}
-       value={Type}
-  
-     >
-       <option className="dropdown-item" value="">
-         --   Task Type --
-       </option>
-       <option className="dropdown-item" value="Epic">
-         Epic
-       </option>
-       <option className="dropdown-item" value="Task">
-         Task
-       </option>
-       <option className="dropdown-item" value="Bug">
-         Bug
-       </option>
-     </select>
-   </div>
+          />
+        </div>
+        <div>
+          <select
+            className="form-control shadow-sm"
+            onChange={(e) => handleTaskTypeData(e.target.value)}
+            value={Type}
+          >
+            <option className="dropdown-item" value="">
+              -- Task Type --
+            </option>
+            <option className="dropdown-item" value="Epic">
+              Epic
+            </option>
+            <option className="dropdown-item" value="Task">
+              Task
+            </option>
+            <option className="dropdown-item" value="Bug">
+              Bug
+            </option>
+          </select>
+        </div>
         <div>
           <button className="btn btn-danger  p-1" onClick={clearAll}>
             Clear All
@@ -295,8 +314,6 @@ function TaskList() {
             );
           })}
       </div>
-
-      {Mes && <div className="text-center border-2 p-2 rounded-0">{Mes}</div>}
     </>
   );
 }

@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../FetchData";
-
+import BoxModel from '../ComponentElement/BoxModel'
+import LoadingSpinner from '../ComponentElement/LoadingSpinner'
 
 function ExpensesList() {
   useEffect(() => {
-      GetTaskList()
+    GetExpenseList()
     }, [])
 
     const [Data, setData] = useState([]);
@@ -14,11 +15,14 @@ function ExpensesList() {
     const Navigate = useNavigate();
     const [Display, setDisplay] = useState('none')
 
-    const GetTaskList = async () => {
+
+    const GetExpenseList = async () => {
       try {
         const response = await Fetchdata("GET", "http://localhost:8080/ExpensesList");
         if(response.length<1){
           setMes('No Record Found')
+          handelOpenModelBox()
+          setDisplay('flex')
         }else{
         //   console.log(response);
           setData(response)
@@ -27,6 +31,7 @@ function ExpensesList() {
         }
       } catch (err) {
         setMes(err.message)
+        handelOpenModelBox()
       }
     };
 
@@ -35,8 +40,11 @@ function ExpensesList() {
       try {
         const response = await Fetchdata("post", "http://localhost:8080/DeleteExpense", {ID});
          setMes(response.mes)
+         handelOpenModelBox()
+         GetExpenseList()
       } catch (error) {
         setMes(error.message)
+        handelOpenModelBox()
       }
     }
 
@@ -53,6 +61,18 @@ function ExpensesList() {
       setFilterData(Data)
     }
 
+     
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  }
+
   return (
     <>
       <div className="d-flex gap-3 m-2 justify-content-between">
@@ -65,6 +85,7 @@ function ExpensesList() {
           </button>
         </div>
       </div>
+      
       <div className={`d-${Display} m-4 justify-content-center gap-2`}>
         <div><h6 className="h6 p-2">Month</h6></div>
         <div><input
@@ -75,6 +96,9 @@ function ExpensesList() {
            <div><button className="btn btn-success rounded-0" onClick={ClearAll}>Clear All</button></div>
         </div>
       <div className="d-flex">
+      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+       </dialog>
         <table className="table shadow-sm  table-bordered m-3">
           <thead className="table-light text-center " key={"thead"}>
             <tr className="mb-2">
@@ -128,7 +152,9 @@ function ExpensesList() {
           </tbody>
         </table>
       </div>
-      {Mes && <div className="text-center border-2 p-2 rounded-0">{Mes}</div>}
+      <div className={`d-${Display ==='flex' ? 'none' : 'flex'} justify-content-center`}>
+        <LoadingSpinner />
+      </div>
     </>
   );
 }

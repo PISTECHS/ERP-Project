@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../FetchData";
+import LoadingSpinner from "../ComponentElement/LoadingSpinner";
+import BoxModel from "../ComponentElement/BoxModel";
 
 function SalesList() {
   useEffect(() => {
@@ -10,7 +12,7 @@ function SalesList() {
   const [Data, setData] = useState([]);
   const [FilterData, setFilterData] = useState([]);
   const [Mes, setMes] = useState("");
-  const [Display, setDisplay] = useState('none')
+  const [Display, setDisplay] = useState("none");
   const Navigate = useNavigate();
 
   const GetSalesList = async () => {
@@ -21,11 +23,13 @@ function SalesList() {
       );
       if (response.length < 1) {
         setMes("No Record Found");
+        setDisplay("flex");
+        handelOpenModelBox();
       } else {
         //   console.log(response);
-        setFilterData(response)
+        setFilterData(response);
         setData(response);
-        setDisplay('flex')
+        setDisplay("flex");
       }
     } catch (err) {
       setMes(err.message);
@@ -41,23 +45,34 @@ function SalesList() {
         { ID }
       );
       setMes(response.mes);
+      handelOpenModelBox();
+      GetSalesList()
     } catch (error) {
       setMes(error.message);
+      handelOpenModelBox()
     }
   };
-  
+
   const handleMonthData = (m) => {
     const filter = FilterData.filter((e) => {
-      return(
-        e.ExpenseMonth === m
-     )
-    })
-    setFilterData(filter)
-  }
+      return e.ExpenseMonth === m;
+    });
+    setFilterData(filter);
+  };
 
   const ClearAll = () => {
-    setFilterData(Data)
-  }
+    setFilterData(Data);
+  };
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  };
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  };
 
   return (
     <>
@@ -79,16 +94,30 @@ function SalesList() {
           </button>
         </div>
       </div>
+      <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+      </dialog>
 
       <div className={`d-${Display} m-4 justify-content-center gap-2`}>
-        <div><h6 className="h6 p-2">Month</h6></div>
-        <div><input
+        <div>
+          <h6 className="h6 p-2">Month</h6>
+        </div>
+        <div>
+          <input
             className="form-control shadow-sm"
             onChange={(e) => handleMonthData(e.target.value)}
             type="month"
-          /></div>
-           <div><button className="btn btn-success rounded-0" onClick={ClearAll}>Clear All</button></div>
+          />
         </div>
+        <div>
+          <button className="btn btn-success rounded-0" onClick={ClearAll}>
+            Clear All
+          </button>
+        </div>
+      </div>
 
       <div className="d-flex">
         <table className="table shadow-sm  table-bordered m-3">
@@ -156,7 +185,13 @@ function SalesList() {
           </tbody>
         </table>
       </div>
-      {Mes && <div className="text-center border-2 p-2 rounded-0">{Mes}</div>}
+      <div
+        className={`d-${
+          Display === "flex" ? "none" : "flex"
+        } justify-content-center`}
+      >
+        <LoadingSpinner />
+      </div>
     </>
   );
 }

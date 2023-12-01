@@ -6,86 +6,127 @@ import { RegisterFieldSchema } from "../ValidationSchemas";
 
 function ManageField() {
   useEffect(() => {
-    runFunction()
+    runFunction();
   }, []);
 
   const [Data, setData] = useState([]);
   const [FilterData, setFilterData] = useState([]);
-  const [Mes, setMes] = useState("");
+  const [Mes, setMes] = useState('');
   const Navigate = useNavigate();
-  const [ID, setID] = useState('0')
+  const [ID, setID] = useState("0");
+  const [Display, setDisplay] = useState("flex");
+  
 
 
-  const runFunction = async() => {
+  const runFunction = async () => {
     await GetFieldList();
     await LastID();
-  }
-  const LastID = async() => {
-    setMes('')
-    try{
-     const resp = await Fetchdata('GET',"http://localhost:8080/GetLastFieldID")
-     // console.log(resp.length);
-     if(resp.length>0){
-       setID(resp[0].ID + 1)
-     }else{
-       setID(resp.length + 1)
-     } 
-    }
-    catch(err){
-     console.log(err.message)
-    }
- }
-
-  const GetFieldList = async () => {
+  };
+  const LastID = async () => {
+    setMes("");
     try {
-      const response = await Fetchdata("GET", "http://localhost:8080/FieldList");
-    //   console.log(response);
-      if(response.length<1){
-        setMes('No Record Found')
-      }else{
-        setData(response)
-        // console.log(response);
+      const resp = await Fetchdata(
+        "GET",
+        "http://localhost:8080/GetLastFieldID"
+      );
+      // console.log(resp.length);
+      if (resp.length > 0) {
+        setID(resp[0].ID + 1);
+      } else {
+        setID(resp.length + 1);
       }
     } catch (err) {
-      setMes(err.message)
+      console.log(err.message);
+      
     }
   };
 
-  const handleDeleteField = async (ID) => {
-    
-    setMes('')
+  const GetFieldList = async () => {
     try {
-      const response = await Fetchdata("post", "http://localhost:8080/DeleteField", {ID});
-       setMes(response.mes)
-       runFunction()
-    } catch (error) {
-      setMes(error.message)
+      const response = await Fetchdata(
+        "GET",
+        "http://localhost:8080/FieldList"
+      );
+      //   console.log(response);
+
+      if (response.length < 1) {
+        setDisplay("none");
+        setMes("No Record Found");
+        // showModelEle()
+      } else {
+        setDisplay("none");
+        setData(response);
+        // console.log(response);
+      }
+    } catch (err) {
+      setDisplay("none");
+      setMes(err.message);
+      // showModelEle()
     }
-    
+  };
+
+  
+  const handleDeleteField = async (ID) => {
+    setDisplay('flex')
+    setMes("");
+    try {
+      const response = await Fetchdata(
+        "post",
+        "http://localhost:8080/DeleteField",
+        { ID }
+      );
+      setDisplay('none')
+      setMes(response.mes);
+      showModelEle()
+      runFunction();
+    } catch (error) {
+      setDisplay('none')
+      setMes(error.message);
+      showModelEle()
+    }
   };
 
   const handleAddField = async (obj) => {
     // console.log({...obj,ID});
-    setMes('')
+    setDisplay("flex");
+    setMes("");
     try {
-      const response = await Fetchdata("post", "http://localhost:8080/AddField", {...obj,ID});
-       setMes(response.mes)
-       runFunction()
+      const response = await Fetchdata(
+        "post",
+        "http://localhost:8080/AddField",
+        { ...obj, ID }
+      );
+      setDisplay("none");
+      setMes(response.mes);
+      showModelEle()
+      runFunction();
     } catch (error) {
-      setMes(error.message)
+      setDisplay("none");
+      setMes(error.message);
+      showModelEle()
     }
   };
 
+  const showModelEle = () => {
+    const dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+  
+  const handleCloseMondel = () => {
+    const dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  }
+
   const RegisterFieldValues = {
-    FieldName: '',
+    FieldName: "",
   };
 
   const formik = useFormik({
     initialValues: RegisterFieldValues,
     validationSchema: RegisterFieldSchema,
     onSubmit: (values) => {
-    //   console.log(values);
-    handleAddField(values)
+      //   console.log(values);
+      handleAddField(values);
     },
   });
   return (
@@ -95,34 +136,50 @@ function ManageField() {
           Manage Field
         </h2>
       </div>
+      <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <div className="modal-content ">
+          <div className="text-center">
+            <div>
+              <h5 className="h5">{Mes}</h5>
+            </div>
+            <div>
+              <button className="btn btn-info" onClick={handleCloseMondel}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </dialog>
       <form onSubmit={formik.handleSubmit}>
-      <div className="d-flex flex-wrap justify-content-center text-center">
-      
-        <div className="me-2">
-          <h6 className="h6 mt-2">Name</h6>
+        <div className="d-flex flex-wrap justify-content-center text-center">
+          <div className="me-2">
+            <h6 className="h6 mt-2">Name</h6>
+          </div>
+          <div className="col-lg-5">
+            <input
+              name="FieldName"
+              className="form-control shadow-sm"
+              onChange={formik.handleChange}
+              value={formik.values.FieldName}
+            />
+          </div>
+          <div className="ms-2">
+            <button
+              className="btn btn-primary border-0 shadow-sm rounded-0"
+              type="submit"
+            >
+              Add Field
+            </button>
+          </div>
+          {formik.touched.FieldName && formik.errors.FieldName ? (
+            <div className="text-danger">{formik.errors.FieldName}</div>
+          ) : null}
         </div>
-        <div className="col-lg-5">
-          <input
-            name="FieldName"
-            className="form-control shadow-sm"
-            onChange={formik.handleChange}
-            value={formik.values.FieldName}
-          />
-        </div>
-        <div className="ms-2">
-        <button
-                  className="btn btn-primary border-0 shadow-sm rounded-0"
-                  type="submit"
-                >
-                  Add Field
-                </button>
-        </div>
-        {formik.touched.FieldName && formik.errors.FieldName ? (
-          <div className="text-danger">{formik.errors.FieldName}</div>
-        ) : null}
        
-      </div>
-      {Mes && <div className="text-center border-2 p-2 rounded-0">{Mes}</div>}
+         
       </form>
 
       {/* Task List */}
@@ -141,6 +198,7 @@ function ManageField() {
               </th>
             </tr>
           </thead>
+
           <tbody className="border-dark text-center " key={"tbody"}>
             {Data &&
               Data.map((ele, index) => {
@@ -167,6 +225,11 @@ function ManageField() {
         </table>
       </div>
      
+      <div className={`d-${Display} justify-content-center`}>
+        <div class=" spinner-grow text-dark" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
     </>
   );
 }

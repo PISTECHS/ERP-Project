@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Fetchdata from "../../Component/FetchData";
 import { useNavigate } from 'react-router-dom'
-import LoadingSticks from '../../Component/ComponentElement/LoadingSticks';
+import BoxModel from '../../Component/ComponentElement/BoxModel';
+import LoadingSpinner from '../../Component/ComponentElement/LoadingSpinner';
 
 function ProjectList() {
   
@@ -13,6 +14,8 @@ function ProjectList() {
   const [FilterData, setFilterData] = useState([]);
   const [Mes, setMes] = useState('')
   const [CardDisplay, setCardDisplay] = useState('flex')
+ 
+
   const Navigate = useNavigate();
 
 
@@ -24,14 +27,16 @@ function ProjectList() {
       if(response.length<1){
         setCardDisplay('none')
         setMes('No Record Found')
+        handelOpenModelBox()
       }else{
         setCardDisplay('none')
-        setData(response)
+        setData(response) 
         // console.log(response);
       }
     } catch (err) {
       setCardDisplay('none')
       setMes(err.message)
+      handelOpenModelBox()
     }
   };
 
@@ -40,9 +45,22 @@ function ProjectList() {
     try {
       const response = await Fetchdata("post", "http://localhost:8080/DeleteProject", {ID});
        setMes(response.mes)
+       handelOpenModelBox()
+       GetProjectList()
     } catch (error) {
       setMes(error.message)
+      handelOpenModelBox()
     }
+  }
+  
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
   }
 
 
@@ -56,6 +74,9 @@ function ProjectList() {
        </div>
        {/* Task List */}
        <div className="d-flex">
+       <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+       </dialog>
        <table className="table shadow-sm  table-bordered m-3">
             <thead className="table-light text-center " key={"thead"}>
               <tr className="mb-2">
@@ -123,11 +144,14 @@ function ProjectList() {
                     </>
                   );
                 })}
-                <div className={`d-${CardDisplay} placeholder-glow m-5 justify-content-center`}><LoadingSticks /></div>
+                {/* <div className={`d-${CardDisplay} placeholder-glow m-5 justify-content-center`}><LoadingSticks /></div> */}
             </tbody>
           </table>
        </div>
-       {Mes && <div className="text-center border-2 p-2 rounded-0">{Mes}</div>}
+       
+       <div className={`d-${CardDisplay} justify-content-center`}>
+         <LoadingSpinner />
+      </div>
     </>
   )
 }

@@ -3,6 +3,8 @@ import { useFormik } from "formik";
 import { RegisterProjectSchema } from "../ValidationSchemas";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
+
 function RegisterProject() {
   
   const [Mes, setMes] = useState('')
@@ -23,7 +25,8 @@ function RegisterProject() {
       const response = await Fetchdata("GET", "http://localhost:8080/FieldList");
     //   console.log(response);
       if(response.length<1){
-        setMes('No Record Found')
+        setMes('No Field Found')
+        handelOpenModelBox()
       }else{
         setFieldList(response)
         // console.log(response);
@@ -46,6 +49,7 @@ function RegisterProject() {
      }
      catch(err){
       setMes(err.message)
+      
       // console.log(err.message)
      }
   }
@@ -56,11 +60,23 @@ function RegisterProject() {
     try {
       const response = await Fetchdata("post", "http://localhost:8080/AddProject", OBJ);
        setMes(response.mes)
+       handelOpenModelBox()
     } catch (error) {
       setMes(error.message)
+      handelOpenModelBox()
     }
   }
 
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  }
 
    
   const RegisterProjectValues = {
@@ -88,6 +104,9 @@ function RegisterProject() {
   return (
     <>
       <div className="conatainer m-4">
+      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+       </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div
             className="card shadow-lg rounded-0 m-3 p-4"  

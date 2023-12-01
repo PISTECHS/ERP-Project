@@ -3,6 +3,8 @@ import { useFormik } from "formik";
 import { RegisterProjectSchema } from "../ValidationSchemas";
 import { useNavigate, useLocation } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
+
 function UpdateProject() {
   
   const [Mes, setMes] = useState('')
@@ -15,12 +17,23 @@ function UpdateProject() {
      setMes('')
      try{
       let response = await Fetchdata("post", "http://localhost:8080/UpdateProject", obj)
-      console.log(response);
        setMes(response.mes)
+       handelOpenModelBox()
      }
      catch(err){
       console.log(err.message);
+      handelOpenModelBox()
      }
+  }
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
   }
 
    
@@ -28,6 +41,7 @@ function UpdateProject() {
     // ProjectID: '',
     ...location.state
   };
+  
 
   const formik = useFormik({
     initialValues: RegisterProjectValues,
@@ -40,6 +54,9 @@ function UpdateProject() {
   return (
     <>
       <div className="conatainer m-4">
+      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+       </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div
             className="card shadow-lg rounded-0 m-3 p-4"  
@@ -290,9 +307,8 @@ function UpdateProject() {
                 </div>
                 </div>
               <div className="m-5 text-center">
-              {Mes && <div className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3" style={{backgroundColor: 'lightblue'}}>
-                  <div> <h6 className="">{Mes}</h6> </div>
-                 
+              {Mes && <div className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3" style={{backgroundColor: 'grey'}}>
+             
                   <div><button
                   className="btn btn-danger rounded-0"
                   onClick={() => Navigate("/services/project/list")}

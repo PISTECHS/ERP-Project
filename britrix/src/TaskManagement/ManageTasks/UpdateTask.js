@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { RegisterTaskSchema } from "../ValidationSchemas";
 import Fetchdata from "../../Component/FetchData";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
+
 
 const UpdateTask = () => {
   useEffect(() => {
-    MainRun()
-  }, [])
+    MainRun();
+  }, []);
 
-  const [Mes, setMes] = useState('')
+  const [Mes, setMes] = useState("");
   const location = useLocation();
   const Data = location.state;
-  const Field = location.state.TaskField
-  const RegisterTaskValues = Data
-  const Navigate = useNavigate()
+  const Field = location.state.TaskField;
+  const RegisterTaskValues = Data;
+  const Navigate = useNavigate();
   const [UserList, setUserList] = useState([]);
 
   const MainRun = async () => {
     await TaskUsers();
   };
 
-  
   const TaskUsers = async () => {
     setMes("");
     try {
@@ -37,28 +38,50 @@ const UpdateTask = () => {
     }
   };
 
-  const UpdateTaskData = async(obj) => {
-    setMes('')
+  const UpdateTaskData = async (obj) => {
+    setMes("");
     try {
-      const response = await Fetchdata("post", "http://localhost:8080/UpdateTaskRecord", obj);
-       setMes(response.mes)
+      const response = await Fetchdata(
+        "post",
+        "http://localhost:8080/UpdateTaskRecord",
+        obj
+      );
+      setMes(response.mes);
+      handelOpenModelBox();
     } catch (error) {
-      setMes(error.message)
+      setMes(error.message);
+      handelOpenModelBox();
     }
-    // console.log(obj); 
-  }
+    // console.log(obj);
+  };
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  };
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  };
 
   const formik = useFormik({
     initialValues: RegisterTaskValues,
     validationSchema: RegisterTaskSchema,
-    onSubmit: (values) => { 
-      UpdateTaskData(values)
+    onSubmit: (values) => {
+      UpdateTaskData(values);
     },
   });
 
   return (
     <>
       <div className="conatainer m-4">
+        <dialog
+          className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+          id="dialog"
+        >
+          <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div className="card shadow-lg rounded-0 m-3 p-4">
             <div className=" d-flex flex-wrap col-12 m-3 justify-content-between">
@@ -89,7 +112,6 @@ const UpdateTask = () => {
                       value={formik.values.TaskField}
                       readOnly={true}
                     />
-                   
                   </div>
                   {formik.touched.TaskField && formik.errors.TaskField ? (
                     <div className="text-danger">{formik.errors.TaskField}</div>
@@ -218,7 +240,7 @@ const UpdateTask = () => {
                       onChange={formik.handleChange}
                       value={formik.values.TaskAllocation}
                     >
-                    <option className="dropdown-item" value="">
+                      <option className="dropdown-item" value="">
                         --Choose an option--
                       </option>
                       {UserList.map((key) => {
@@ -349,21 +371,30 @@ const UpdateTask = () => {
               </div>
 
               <div className="m-5 text-center">
-              {Mes && <div className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3" style={{backgroundColor: 'lightblue'}}>
-                  <div> <h6 className="p-2">{Mes}</h6> </div>
-                 
-                  <div><button
-                  className="btn btn-danger rounded-0"
-                  onClick={() => Navigate("/services/task/manage")}
-                >
-                  Add New Task
-                </button></div>
-                  <div><button className="btn btn-info border-0 shadow-sm rounded-0"
-                   onClick={() => Navigate("/services/task")}
-                  
-                  >Task Manager</button></div>
-               
-                </div>}
+                {Mes && (
+                  <div
+                    className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3"
+                    style={{ backgroundColor: "gray" }}
+                  >
+
+                    <div>
+                      <button
+                        className="btn btn-danger rounded-0"
+                        onClick={() => Navigate("/services/task/manage")}
+                      >
+                        Add New Task
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        className="btn btn-info border-0 shadow-sm rounded-0"
+                        onClick={() => Navigate("/services/task")}
+                      >
+                        Task Manager
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"
@@ -377,6 +408,6 @@ const UpdateTask = () => {
       </div>
     </>
   );
-}
+};
 
-export default UpdateTask
+export default UpdateTask;

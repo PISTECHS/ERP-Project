@@ -3,6 +3,9 @@ import { useFormik } from "formik";
 import { RegisterTaskSchema } from "../ValidationSchemas";
 import Fetchdata from "../../Component/FetchData";
 import { useNavigate, useLocation } from "react-router-dom";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
+
+
 
 function RegisterTask() {
   useEffect(() => {
@@ -12,7 +15,7 @@ function RegisterTask() {
   const [Mes, setMes] = useState("");
   const Navigate = useNavigate();
   const Location = useLocation();
-  const [Toast, isToast] = useState(true);
+
 
   const [ProjectList, setProjectList] = useState([]);
   const [UserList, setUserList] = useState([]);
@@ -34,6 +37,7 @@ function RegisterTask() {
       setUserList(response);
     } catch (error) {
       setMes(error.message);
+      handelOpenModelBox()
     }
   };
 
@@ -47,10 +51,22 @@ function RegisterTask() {
         obj
       );
       setMes(response.mes);
+      handelOpenModelBox()
     } catch (error) {
       setMes(error.message);
+      handelOpenModelBox()
     }
   };
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  }
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  }
 
   
 
@@ -81,28 +97,11 @@ function RegisterTask() {
   });
   return (
     <>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-          <div
-            id="liveToast"
-            class="toast"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div class="toast-header">
-              <strong class="me-auto">Bootstrap</strong>
-              <small>11 mins ago</small>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="toast-body">Hello, world! This is a toast message.</div>
-          </div>
-        </div>
+      
       <div className="conatainer m-4">
+      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+       </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div className="card shadow-lg rounded-0 m-3 p-4">
             <div className=" d-flex flex-wrap col-12 m-3 justify-content-between">

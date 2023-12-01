@@ -5,9 +5,9 @@ const server = express();
 const { MongoClient } = require("mongodb");
 
 const bcrypt = require("bcrypt");
-let saltRound = 10;
+let saltRound = 10; 
 
-//TaskManagement Functions
+//TaskManagement Functions 
 const {
   RegisterUser,
   RegisterUsersList,
@@ -75,6 +75,7 @@ let UserLogin = async (username, password) => {
   let client = await ConnectionFunc();
   let res = await client.connect();
   let database = res.db("TaskManager").collection("RegisterUser");
+  
   const user = await database.findOne({ Username: username });
   if (!user) {
     return { success: false, mes: "User not found" };
@@ -93,11 +94,11 @@ server.post("/registeruser", async (req, resp) => {
   let hashPass = bcrypt.hashSync("pistechs12345", salt);
 
   let Data = {
-    Name: req.body.EmpName,
+    Name: req.body.EmpName, 
     ID: req.body.EmpID,
     Username: `EMP-${req.body.EmpID}@${req.body.EmpPosition}.pistechs.com`,
     Type: req.body.EmpType,
-    Field: req.body.EmpField,
+    Field: req.body.EmpField, 
     Email: req.body.EmpEmail,
     Role: req.body.EmpPosition,
     ContactNo: req.body.EmpContactNo,

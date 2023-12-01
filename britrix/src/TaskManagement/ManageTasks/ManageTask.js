@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
 import LoadingSticks from "../../Component/ComponentElement/LoadingSticks";
+import BoxModel from "../../Component/ComponentElement/BoxModel";
+
 const ManageTask = () => {
   useEffect(() => {
     TaskProjectlist();
@@ -23,6 +25,7 @@ const ManageTask = () => {
       if (response.length < 1) {
         setCardDisplay('none')
         setMes("No Record Found");
+        handelOpenModelBox()
       } else {
         setProjectList(response);
         // setfilterProjects(response);
@@ -37,6 +40,7 @@ const ManageTask = () => {
     } catch (err) {
       setCardDisplay('none')
       setMes(err.message);
+      handelOpenModelBox()
     }
   };
 
@@ -45,6 +49,18 @@ const ManageTask = () => {
       let filter =  ProjectList.filter((item) => item.ProjectField === value)
       Navigate('/services/task/create', {state: {ProjectField:value, Obj:filter}})
   }
+
+ 
+
+const handelOpenModelBox = () => {
+let dialogElem = document.getElementById("dialog");
+dialogElem.showModal();
+}
+
+const handelCloseModelBox = () => {
+let dialogElem = document.getElementById("dialog");
+dialogElem.close();
+}
 
   return (
     <>
@@ -67,6 +83,9 @@ const ManageTask = () => {
         </div>
        
       </div>
+      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
+  <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+</dialog>
       {/* Task Projects */}
       <div className={`d-${CardDisplay} placeholder-wave justify-content-center`}><LoadingSticks /></div>
 
@@ -91,7 +110,6 @@ const ManageTask = () => {
             </>
           );
         })}
-        {Mes && <div className="text-center">{Mes}</div>}
       </div>
     </>
   );
