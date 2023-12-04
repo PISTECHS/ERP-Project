@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import Fetchdata from "../../Component/FetchData";
+import Fetchdata from "../Component/FetchData";
 import { useNavigate } from "react-router-dom";
-import { SalesSchema } from "../../TaskManagement/ValidationSchemas";
+import { SalesSchema } from "../TaskManagement/ValidationSchemas";
 
 function AddSales() {
   useEffect(() => {
@@ -128,10 +128,10 @@ function AddSales() {
                         --Choose an option--
                       </option>
                       <option className="dropdown-item" value="FixedExpense">
-                        Fixed Expense
+                        Fixed Sale
                       </option>
                       <option className="dropdown-item" value="SavingExpense">
-                        Saving Expense
+                        Saving Sale
                       </option>
                     </select>
                   </div>

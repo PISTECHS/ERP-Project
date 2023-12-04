@@ -7,7 +7,7 @@ import BoxModel from "../../Component/ComponentElement/BoxModel";
 
 function RegisterUser() {
   const [Mes, setMes] = useState("");
-  const [UserID, setUserID] = useState("E00");
+  const [UserID, setUserID] = useState("");
   const [FieldList, setFieldList] = useState([]);
   const Navigate = useNavigate();
 
@@ -317,34 +317,7 @@ function RegisterUser() {
                 </div>
               </div>
               <div className="m-5 text-center">
-                {Mes && (
-                  <div
-                    className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3"
-                    style={{ backgroundColor: "lightblue" }}
-                  >
-                    <div>
-                      {" "}
-                      <h6 className="">{Mes}</h6>{" "}
-                    </div>
-
-                    <div>
-                      <button
-                        className="btn btn-danger rounded-0"
-                        onClick={() => Navigate("/services/task/team/list")}
-                      >
-                        User List
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="btn btn-info border-0 shadow-sm rounded-0"
-                        onClick={() => Navigate("/services/task")}
-                      >
-                        Task Manager
-                      </button>
-                    </div>
-                  </div>
-                )}
+                
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"

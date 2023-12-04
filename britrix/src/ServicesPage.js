@@ -10,7 +10,7 @@ function ServicesPage() {
         { Title: "HR", subTitle: "Employee Management" },
         { Title: "Workflows", subTitle: "Business process" },
         { Title: "Sales", subTitle: "Products Inventory Payments", url: '/services/expenses' },
-        { Title: "Analytics", subTitle: "Report Performance tracking" },
+        { Title: "Analytics", subTitle: "Report Performance tracking", url:'/analytics/manage' },
         { Title: "Customer", subTitle: " Support Self-Service Support" },
         { Title: "Media", subTitle: "  Media Management & analytics." },
       ];

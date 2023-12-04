@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Fetchdata from "../../Component/FetchData";
 import { useNavigate } from "react-router-dom";
-import LoadingSticks from "../../Component/ComponentElement/LoadingSticks";
+import LoadingSpinner from "../../Component/ComponentElement/LoadingSpinner";
+
 import BoxModel from "../../Component/ComponentElement/BoxModel";
 
 const UsersList = () => {
@@ -14,6 +15,7 @@ const UsersList = () => {
   useEffect(() => {
     GetUserList();
   }, []);
+
   const GetUserList = async () => {
     try {
       const response = await Fetchdata("GET", "http://localhost:8080/userlist");
@@ -55,12 +57,17 @@ const UsersList = () => {
 
   const handelOpenModelBox = () => {
     let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
+    if(dialogElem){
+      dialogElem.showModal();
+    }
+    
   };
 
   const handelCloseModelBox = () => {
     let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
+    if(dialogElem){
+      dialogElem.close();
+    }
   };
 
   const handleUpdateUser = (obj) => {
@@ -113,11 +120,6 @@ const UsersList = () => {
                   <h6 className="h6">Option</h6>
                 </th>
               </tr>
-              <div
-                className={`d-${CardDisplay} placeholder-glow justify-content-center`}
-              >
-                <LoadingSticks />
-              </div>
             </thead>
 
             <tbody className="border-dark text-center " key={"tbody"}>
@@ -155,10 +157,12 @@ const UsersList = () => {
                 })}
             </tbody>
           </table>
-          {Mes && (
-            <div className="text-center border-2 p-2 rounded-0">{Mes}</div>
-          )}
         </div>
+      </div>
+      <div
+        className={`d-${CardDisplay} placeholder-glow justify-content-center`}
+      >
+        <LoadingSpinner />
       </div>
     </>
   );

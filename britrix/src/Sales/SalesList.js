@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Fetchdata from "../FetchData";
-import LoadingSpinner from "../ComponentElement/LoadingSpinner";
-import BoxModel from "../ComponentElement/BoxModel";
+import Fetchdata from "../Component/FetchData";
+import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
+import BoxModel from "../Component/ComponentElement/BoxModel";
 
 function SalesList() {
   useEffect(() => {

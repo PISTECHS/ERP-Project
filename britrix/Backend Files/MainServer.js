@@ -11,7 +11,7 @@ let saltRound = 10;
 const {
   RegisterUser,
   RegisterUsersList,
-  DeleteUser,
+  DeleteUser,  
   GEtLastUserID,
   UpdateUserRecord,
   RegisterTask,
@@ -19,7 +19,8 @@ const {
   DeleteTask,
   UpdateTaskRecord,
   TaskProjectlist,
-  TaskUsers
+  TaskUsers,
+  GetLastTaskID
 } = require("./TaskManagement");
 
 //Sales & Expense Record
@@ -130,8 +131,8 @@ server.post("/deleteuser", async (req, resp) => {
   let result = await Promise.resolve(
     DeleteUser(ConnectionFunc, req.body.Username)
   ).then((res) => {
-    return res;
-  });
+    return res; 
+  }); 
   resp.json(result); 
 });
 
@@ -165,9 +166,9 @@ server.post("/TaskUsers", async (req, resp) => {
   );
   resp.json(result);
 
-});
+}); 
 
-server.get("/GEtLastUserID", async (req, resp) => {
+server.get("/GEtLastUserID", async (req, resp) => { 
   let result = await Promise.resolve(GEtLastUserID(ConnectionFunc)).then(
     (res) => {
       return res;
@@ -178,6 +179,9 @@ server.get("/GEtLastUserID", async (req, resp) => {
 
 });
 
+
+ //Task Management 
+
 server.get("/GetTaskList", async (req, resp) => {
   let result = await Promise.resolve(GetTaskList(ConnectionFunc)).then(
     (res) => {
@@ -186,14 +190,23 @@ server.get("/GetTaskList", async (req, resp) => {
   );
   resp.json(result);
 });
-
-
- //Task Management 
-server.post("/RegisterTask", async (req, resp) => {
-  let result = await Promise.resolve(RegisterTask(ConnectionFunc, req.body)).then(
+ 
+ server.get("/GetLastTaskID", async (req, resp) => {
+  let result = await Promise.resolve(GetLastTaskID(ConnectionFunc, req.body)).then(
     (res) => {
       return res;
     }
+  )
+  // console.log(result);
+  resp.json(result);
+}); 
+
+
+server.post("/RegisterTask", async (req, resp) => {
+  let result = await Promise.resolve(RegisterTask(ConnectionFunc, req.body)).then(
+    (res) => {
+      return res; 
+    } 
   );
   resp.json(result);
 });

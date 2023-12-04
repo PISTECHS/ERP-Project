@@ -7,6 +7,7 @@ import BoxModel from "../../Component/ComponentElement/BoxModel";
 function TaskList() {
   useEffect(() => {
     GetTaskList();
+    
   }, []);
 
   const [Data, setData] = useState([]);
@@ -16,9 +17,11 @@ function TaskList() {
   const [Month, setMonth] = useState("");
   const [Type, setType] = useState("");
   const [Priority, setPriority] = useState("");
+
   const Navigate = useNavigate();
 
   const GetTaskList = async () => {
+
     try {
       const response = await Fetchdata(
         "GET",
@@ -74,6 +77,7 @@ function TaskList() {
     });
     setFilterData(filter);
   };
+
   const handleTaskTypeData = (t) => {
     setType(t);
     const filter = FilterData.filter((e) => {
@@ -88,6 +92,8 @@ function TaskList() {
     setType("");
     setFilterData(Data);
   };
+  
+
 
   const handleUpdateUser = (obj) => {
     Navigate("/services/task/update", { state: obj });
@@ -188,9 +194,10 @@ function TaskList() {
         <div className={CardDisplay}>
           <LoadingCard />
         </div>
-
+        
         {FilterData &&
           FilterData.map((ele, index) => {
+            
             return (
               <>
                 <div
@@ -241,6 +248,8 @@ function TaskList() {
                       </div>
                     </div>
                     <h6 class="card-title h6">{ele.ProjectName}</h6>
+                    <h6 class="card-title h6">{ele.EndDate}</h6>
+                    
                     <p class="card-text">{ele.TaskAllocation}</p>
                     <h5 class="card-title h5">
                       {ele.Priority} Priority {ele.Type}

@@ -13,7 +13,7 @@ export const RegisterUserSchema = Yup.object({
 });
 
 export const RegisterTaskSchema = Yup.object({
-    TaskID: Yup.string().required('ID is Required'),
+    // TaskID: Yup.string().required('ID is Required'),
     TaskName: Yup.string().required('Name is Required'),
     TaskField: Yup.string().required('Field is Required'),
     TaskDuration: Yup.string().required('Duration is Required'),
@@ -26,6 +26,7 @@ export const RegisterTaskSchema = Yup.object({
     Summary: Yup.string().required('Summary is Required'),
     Priority: Yup.string().required('Priority is Required'),
     Month: Yup.string().required('Month is Required'),
+    TaskStatus: Yup.string().required('Status is Required'),
     // EmpUsername: Yup.string().required('Username is Required'),
     // EmpPassword: Yup.string().required('Password is Required'),
 });

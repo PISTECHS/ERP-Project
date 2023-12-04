@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useFormik } from "formik";
-import Fetchdata from '../../Component/FetchData';
-import { SalesSchema } from '../../TaskManagement/ValidationSchemas';
+import React, { useState } from 'react'
 
-const UpdateSales = () => {
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import { useFormik } from "formik";
+import Fetchdata from '../Component/FetchData';
+import { ExpenseSchema } from '../TaskManagement/ValidationSchemas';
+
+const UpdateExpense = () => {
 
   const [Mes, setMes] = useState('')
   const location= useLocation()
@@ -14,25 +16,26 @@ const UpdateSales = () => {
     // console.log(obj);
      setMes('')
      try{
-      let response = await Fetchdata("post", "http://localhost:8080/UpdateSales", obj)
+      let response = await Fetchdata("post", "http://localhost:8080/UpdateExpenses", obj)
       console.log(response);
        setMes(response.mes)
      }
      catch(err){
       console.log(err.message);
      }
+    
   }
 
   
 
-  const SalesValues = {
+  const ExpensesValues = {
     ...location.state
   };
 
  
   const formik = useFormik({
-    initialValues: SalesValues,
-    validationSchema: SalesSchema,
+    initialValues: ExpensesValues,
+    validationSchema: ExpenseSchema,
     onSubmit: (values) => {
       UpdateData(values)
     },
@@ -45,14 +48,14 @@ const UpdateSales = () => {
             <div className=" d-flex flex-wrap col-12 m-3 justify-content-between">
               <div>
                 {" "}
-                <h4 className="h4">Update Sales</h4>
+                <h4 className="h4">Update Expense</h4>
               </div>
               <div>
                 <button
                   className="btn btn-danger rounded-0"
-                  onClick={() => Naviagte('/services/sales')}
+                  onClick={() => Naviagte('/services/expenses')}
                 >
-                  Sale List
+                  Expense List
                 </button>
               </div>
             </div>
@@ -75,21 +78,21 @@ const UpdateSales = () => {
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
-                    <h6 className="h6 mt-2">Product Name</h6>
+                    <h6 className="h6 mt-2">Expense Name</h6>
                   </div>
                   <div className="col-lg-8 col-12">
                     <input
                       className="form-control h-100 shadow-sm"
                       type="text"
-                      name="ProductName"
+                      name="ExpenseName"
                       onChange={formik.handleChange}
-                      value={formik.values.ProductName}
+                      value={formik.values.ExpenseName}
                     />
                   </div>
 
-                  {formik.touched.ProductName && formik.errors.ProductName ? (
+                  {formik.touched.ExpenseName && formik.errors.ExpenseName ? (
                     <div className="text-danger">
-                      {formik.errors.ProductName}
+                      {formik.errors.ExpenseName}
                     </div>
                   ) : null}
                 </div>
@@ -97,14 +100,14 @@ const UpdateSales = () => {
               <div className="row d-flex flex-wrap col-12 mt-2">
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
-                    <h6 className="h6 mt-2">Sale Type</h6>
+                    <h6 className="h6 mt-2">Expense Type</h6>
                   </div>
                   <div className="col-lg-8 col-12">
                     <select
-                      name="SaleType"
+                      name="ExpenseType"
                       className="form-control shadow-sm"
                       onChange={formik.handleChange}
-                      value={formik.values.SaleType}
+                      value={formik.values.ExpenseType}
                     >
                       <option className="dropdown-item" value="">
                         --Choose an option--
@@ -117,9 +120,9 @@ const UpdateSales = () => {
                       </option>
                     </select>
                   </div>
-                  {formik.touched.SaleType && formik.errors.SaleType ? (
+                  {formik.touched.ExpenseType && formik.errors.ExpenseType ? (
                     <div className="text-danger">
-                      {formik.errors.SaleType}
+                      {formik.errors.ExpenseType}
                     </div>
                   ) : null}
                 </div>
@@ -131,14 +134,14 @@ const UpdateSales = () => {
                     <input
                       className="form-control h-100 shadow-sm"
                       type="date"
-                      name="SaleDate"
+                      name="ExpenseDate"
                       onChange={formik.handleChange}
-                      value={formik.values.SaleDate}
+                      value={formik.values.ExpenseDate}
                     />
                   </div>
-                  {formik.touched.SaleDate && formik.errors.SaleDate ? (
+                  {formik.touched.ExpenseDate && formik.errors.ExpenseDate ? (
                     <div className="text-danger">
-                      {formik.errors.SaleDate}
+                      {formik.errors.ExpenseDate}
                     </div>
                   ) : null}
                 </div>
@@ -146,40 +149,40 @@ const UpdateSales = () => {
               <div className="row d-flex flex-wrap col-12 mt-2">
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
-                    <h6 className="h6 mt-2">Sale Month</h6>
+                    <h6 className="h6 mt-2">Expense Month</h6>
                   </div>
                   <div className="col-lg-8 col-12">
                     <input
                       className="form-control h-100 shadow-sm"
                       type="month"
-                      name="SaleMonth"
+                      name="ExpenseMonth"
                       onChange={formik.handleChange}
-                      value={formik.values.SaleMonth}
+                      value={formik.values.ExpenseMonth}
                     />
                   </div>
-                  {formik.touched.SaleMonth && formik.errors.SaleMonth ? (
+                  {formik.touched.ExpenseMonth && formik.errors.ExpenseMonth ? (
                     <div className="text-danger">
-                      {formik.errors.SaleMonth}
+                      {formik.errors.ExpenseMonth}
                     </div>
                   ) : null}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
-                    <h6 className="h6 mt-2">Sale Amount</h6>
+                    <h6 className="h6 mt-2">Expense Amount</h6>
                   </div>
                   <div className="col-lg-8 col-12">
                     <input
                       className="form-control h-100 shadow-sm"
                       type="text"
-                      name="SaleAmount"
+                      name="ExpenseAmount"
                       onChange={formik.handleChange}
-                      value={formik.values.SaleAmount}
+                      value={formik.values.ExpenseAmount}
                     />
                   </div>
-                  {formik.touched.SaleAmount &&
-                  formik.errors.SaleAmount ? (
+                  {formik.touched.ExpenseAmount &&
+                  formik.errors.ExpenseAmount ? (
                     <div className="text-danger">
-                      {formik.errors.SaleAmount}
+                      {formik.errors.ExpenseAmount}
                     </div>
                   ) : null}
                 </div>
@@ -188,20 +191,20 @@ const UpdateSales = () => {
               <div className="row d-flex flex-wrap col-12 mt-2">
               <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
-                    <h6 className="h6 mt-2">Sale By</h6>
+                    <h6 className="h6 mt-2">Add By</h6>
                   </div>
                   <div className="col-lg-8 col-12">
                     <input
                       className="form-control h-100 shadow-sm"
                       type="text"
-                      name="SaleBy"
+                      name="AddBy"
                       onChange={formik.handleChange}
-                      value={formik.values.SaleBy}
+                      value={formik.values.AddBy}
                     />
                   </div>
-                  {formik.touched.SaleBy && formik.errors.SaleBy ? (
+                  {formik.touched.AddBy && formik.errors.AddBy ? (
                     <div className="text-danger">
-                      {formik.errors.SaleBy}
+                      {formik.errors.AddBy}
                     </div>
                   ) : null}
                 </div>
@@ -224,4 +227,4 @@ const UpdateSales = () => {
   );
 }
 
-export default UpdateSales
+export default UpdateExpense

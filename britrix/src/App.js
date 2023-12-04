@@ -18,17 +18,20 @@ import TaskList from "./TaskManagement/ManageTasks/TaskList";
 import ManageTask from "./TaskManagement/ManageTasks/ManageTask";
 import RegisterTask from "./TaskManagement/ManageTasks/RegisterTask";
 import UpdateTask from "./TaskManagement/ManageTasks/UpdateTask";
-import ExpensesList from "./Component/Sales/ExpensesList";
-import AddExpenses from "./Component/Sales/AddExpenses";
-import UpdateExpense from "./Component/Sales/UpdateExpense";
-import SalesList from "./Component/Sales/SalesList";
-import AddSales from "./Component/Sales/AddSales";
-import UpdateSales from "./Component/Sales/UpdateSales";
+import ExpensesList from "./Sales/ExpensesList";
+import AddExpenses from "./Sales/AddExpenses";
+import UpdateExpense from "./Sales/UpdateExpense";
+import SalesList from "./Sales/SalesList";
+import AddSales from "./Sales/AddSales";
+import UpdateSales from "./Sales/UpdateSales";
 import ProjectList from "./TaskManagement/ManageProjects/ProjectList";
 import RegisterProject from "./TaskManagement/ManageProjects/RegisterProject";
 import UpdateProject from "./TaskManagement/ManageProjects/UpdateProject";
 import ManageField from "./TaskManagement/ManageField/ManageField";
 import EmailPage from "./Communication/EmailPage";
+import ManageAnalytics from "./Analytics/ManageAnalytics";
+import UserAnalytics from "./Analytics/UserAnalytics";
+import FinanceAnalytics from "./Analytics/FinanceAnalytics";
 
 function App() {
   const router = createBrowserRouter(
@@ -76,6 +79,13 @@ function App() {
           {/* Communication */}
           <Route path="services">
              <Route path="email" element={<EmailPage />} />
+          </Route>
+
+           {/* Communication */}
+           <Route path="analytics">
+             <Route path="manage" element={<ManageAnalytics />} />
+             <Route path="user" element={<UserAnalytics />} />
+             <Route path="finance" element={<FinanceAnalytics />} />
           </Route>
         </Route>
       </Route>

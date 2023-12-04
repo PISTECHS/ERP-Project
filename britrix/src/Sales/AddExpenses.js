@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import Fetchdata from "../../Component/FetchData";
+import Fetchdata from "../Component/FetchData";
 import { useNavigate } from "react-router-dom";
-import { ExpenseSchema } from "../../TaskManagement/ValidationSchemas";
+import { ExpenseSchema } from "../TaskManagement/ValidationSchemas";
 
 function AddExpenses() {
   useEffect(() => {

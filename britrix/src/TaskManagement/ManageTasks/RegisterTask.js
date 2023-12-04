@@ -13,6 +13,7 @@ function RegisterTask() {
   }, []);
 
   const [Mes, setMes] = useState("");
+  const [TaskID, setTaskID] = useState()
   const Navigate = useNavigate();
   const Location = useLocation();
 
@@ -23,6 +24,20 @@ function RegisterTask() {
   const MainRun = async () => {
     await TaskUsers();
     setProjectList(Location.state.Obj);
+    const task_id = await Fetchdata('GET', 'http://localhost:8080/GetLastTaskID')
+    if(task_id){
+      // if(task_id.length>0){
+      //   setTaskID(task_id.length)
+      // }else{
+      //   setTaskID(1)
+      // }
+      let id = task_id.length
+      if(id>0){
+        setTaskID(id+1)
+      }else{
+        setTaskID(0)
+      }
+    }
   };
 
   const TaskUsers = async () => {
@@ -42,13 +57,14 @@ function RegisterTask() {
   };
 
   const AddTask = async (obj) => {
+
     // console.log(obj);
     setMes("");
     try {
       const response = await Fetchdata(
         "post",
         "http://localhost:8080/RegisterTask",
-        obj
+        {...obj, TaskID}
       );
       setMes(response.mes);
       handelOpenModelBox()
@@ -71,7 +87,8 @@ function RegisterTask() {
   
 
   const RegisterTaskValues = {
-    TaskID: "",
+    // TaskID : TaskID,
+    // TaskID: "",
     TaskName: "",
     // TaskField: "",
     TaskField: Location.state.ProjectField,
@@ -85,6 +102,7 @@ function RegisterTask() {
     Summary: "",
     Priority: "",
     Month: "",
+    TaskStatus: ""
   };
 
   const formik = useFormik({
@@ -185,13 +203,15 @@ function RegisterTask() {
                       className="form-control h-100 shadow-sm"
                       type="text"
                       name="TaskID"
-                      onChange={formik.handleChange}
-                      value={formik.values.TaskID}
+                      // onChange={formik.handleChange}
+                      // value={formik.values.TaskID}
+                      value={TaskID}
+                      readOnly
                     />
                   </div>
-                  {formik.touched.TaskID && formik.errors.TaskID ? (
+                  {/* {formik.touched.TaskID && formik.errors.TaskID ? (
                     <div className="text-danger">{formik.errors.TaskID}</div>
-                  ) : null}
+                  ) : null} */}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
@@ -388,6 +408,37 @@ function RegisterTask() {
 
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
+                    <h6 className="h6 mt-2">Status</h6>
+                  </div>
+                  <div className="col-lg-8 col-12">
+                    <select
+                      name="TaskStatus"
+                      className="form-control shadow-sm"
+                      onChange={formik.handleChange}
+                      value={formik.values.TaskStatus}
+                    >
+                      <option className="dropdown-item" value="">
+                        --Choose an option--
+                      </option>
+                      <option className="dropdown-item" value="Pending">
+                        Pending
+                      </option>
+                      <option className="dropdown-item" value="Complete">
+                        Complete
+                      </option>
+                      <option className="dropdown-item" value="Block">
+                        Block
+                      </option>
+                    </select>
+                  </div>
+                  {formik.touched.TaskStatus && formik.errors.TaskStatus ? (
+                    <div className="text-danger">{formik.errors.TaskStatus}</div>
+                  ) : null}
+                </div>
+                
+
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                  <div className="col-lg-4 col-12">
                     <h6 className="h6 mt-2">Month</h6>
                   </div>
                   <div className="col-lg-8 col-12">
@@ -421,29 +472,16 @@ function RegisterTask() {
                     <div className="text-danger">{formik.errors.Summary}</div>
                   ) : null}
                 </div>
-              </div>
 
-              <div className="m-5 text-center">
-                {Mes && <div className="border shadow-sm d-flex justify-content-center gap-3 p-3 mb-3" style={{backgroundColor: 'lightblue'}}>
-                  <div> <h6 className="">{Mes}</h6> </div>
-                 
-                  <div><button
-                  className="btn btn-danger rounded-0"
-                  onClick={() => Navigate("/services/task/view")}
-                >
-                  Task List
-                </button></div>
-                  <div><button className="btn btn-info border-0 shadow-sm rounded-0"
-                   onClick={() => Navigate("/services/task")}
-                  
-                  >Task Manager</button></div>
-               
-                </div>}
+                
+              </div> 
+              <div className="m-3 text-center">
+                
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"
                 >
-                  Add New Task
+                  Add New Record
                 </button>
               </div>
             </div>

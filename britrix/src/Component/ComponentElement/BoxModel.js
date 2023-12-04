@@ -10,7 +10,7 @@ const BoxModel = (props) => {
           </div>
           <div>
             <button className="btn btn-danger rounded-0 shadow-sm border-0" onClick={props.closeFunc}>
-              close
+              Close
             </button>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import Fetchdata from "../FetchData";
-import BoxModel from '../ComponentElement/BoxModel'
-import LoadingSpinner from '../ComponentElement/LoadingSpinner'
+import Fetchdata from "../Component/FetchData";
+import BoxModel from '../Component/ComponentElement/BoxModel'
+import LoadingSpinner from '../Component/ComponentElement/LoadingSpinner'
 
 function ExpensesList() {
   useEffect(() => {

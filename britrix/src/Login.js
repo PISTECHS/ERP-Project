@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const [Mes, setMes] = useState("");
   const Navigate = useNavigate();
-  const dialogElem = document.getElementById("dialog");
+  // const dialogElem = document.getElementById("dialog");
  
 
 
@@ -28,17 +28,19 @@ const LoginPage = () => {
         Navigate("/");
       }
     } catch (error) {
+      setMes(error.message);
+      handleOpen()
       console.log(error.message);
     }
   };
 
   const handleOpen = () => {
-    
+    let  dialogElem = document.getElementById("dialog");
     dialogElem.showModal();
   };
 
   const handleClose = () => {
-    
+    let  dialogElem = document.getElementById("dialog");
     dialogElem.close();
   };
 
@@ -51,6 +53,7 @@ const LoginPage = () => {
     EmpEmail: "",
     EmpPass: "",
   };
+
   const formik = useFormik({
     initialValues: LoginUserValues,
     validationSchema: LoginUserSchema,
@@ -124,7 +127,7 @@ const LoginPage = () => {
                         <div className="modal-content ">
                           <div className="text-center">
                           <div><h5 className="h5">{Mes}</h5></div>
-                          <div><button className="btn btn-danger rounded-0" onClick={handleClose}>Dismiss</button></div>
+                          <div><button className="btn btn-danger rounded-0" onClick={handleClose}>Close</button></div>
                           </div>
                         </div>
                     </dialog>

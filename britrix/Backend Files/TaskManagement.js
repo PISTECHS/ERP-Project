@@ -16,7 +16,7 @@ const RegisterUser = async (Connection, Data) => {
     filter,
     Data
   );
-  return result;
+  return result; 
 };
 
 const DeleteUser = async (ConnectionFunc, Username) => {
@@ -113,6 +113,21 @@ const GEtLastUserID = async (Connection) => {
   return result;
 };
 
+
+
+const GetLastTaskID = async (Connection) => {
+  const fields = [
+    {
+      $project: {
+        _id: 0,
+        ID: 1,
+      },
+    },
+  ];
+  const result = await LastUser(Connection, "TaskManager", "RegisterTask", fields);
+  return result;
+};
+
 const UpdateUserRecord = async (Connection, obj) => {
   let filter = { Username: obj.Username };
   const result = await UpdateQuery(
@@ -170,7 +185,7 @@ const UpdateTaskRecord = async (Connection, obj) => {
     filter,
     obj 
   );  
-  return result;
+  return result; 
 };
 
 
@@ -187,4 +202,5 @@ module.exports = {
   UpdateTaskRecord,
   TaskProjectlist,
   TaskUsers,
+  GetLastTaskID,
 };

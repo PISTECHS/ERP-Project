@@ -11,8 +11,8 @@ const ManageTask = () => {
 
   const Navigate = useNavigate();
   const [Mes, setMes] = useState("");
-  const [TaskField, setTaskField] = useState([])
-  const [CardDisplay, setCardDisplay] = useState('flex')
+  const [TaskField, setTaskField] = useState([]);
+  const [CardDisplay, setCardDisplay] = useState("flex");
   const [ProjectList, setProjectList] = useState([]);
 
   const TaskProjectlist = async () => {
@@ -23,14 +23,14 @@ const ManageTask = () => {
       );
       //   console.log(response);
       if (response.length < 1) {
-        setCardDisplay('none')
+        setCardDisplay("none");
         setMes("No Record Found");
-        handelOpenModelBox()
+        handelOpenModelBox();
       } else {
         setProjectList(response);
         // setfilterProjects(response);
         // console.log(response);
-        setCardDisplay('none')   
+        setCardDisplay("none");
         const uniqueProjectFields = [
           ...new Set(response.map((item) => item.ProjectField)),
         ];
@@ -38,35 +38,32 @@ const ManageTask = () => {
         setTaskField(uniqueProjectFields);
       }
     } catch (err) {
-      setCardDisplay('none')
+      setCardDisplay("none");
       setMes(err.message);
-      handelOpenModelBox()
+      handelOpenModelBox();
     }
   };
 
+  const handleAddTask = async (value) => {
+    let filter = ProjectList.filter((item) => item.ProjectField === value);
+    Navigate("/services/task/create", {
+      state: { ProjectField: value, Obj: filter },
+    });
+  };
 
-  const handleAddTask = async(value) => {
-      let filter =  ProjectList.filter((item) => item.ProjectField === value)
-      Navigate('/services/task/create', {state: {ProjectField:value, Obj:filter}})
-  }
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  };
 
- 
-
-const handelOpenModelBox = () => {
-let dialogElem = document.getElementById("dialog");
-dialogElem.showModal();
-}
-
-const handelCloseModelBox = () => {
-let dialogElem = document.getElementById("dialog");
-dialogElem.close();
-}
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  };
 
   return (
     <>
-     
       <div className="main m-2 d-flex justify-content-between">
-    
         <div>
           <h2 className="h2" style={{ color: "rgb(92, 219, 159)" }}>
             Manage Tasks
@@ -81,18 +78,22 @@ dialogElem.close();
             Task List
           </button>
         </div>
-       
       </div>
-      <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
-  <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-</dialog>
+      <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+      </dialog>
       {/* Task Projects */}
-      <div className={`d-${CardDisplay} placeholder-wave justify-content-center`}><LoadingSticks /></div>
+      <div
+        className={`d-${CardDisplay} placeholder-wave justify-content-center`}
+      >
+        <LoadingSticks />
+      </div>
 
       <div className="d-flex flex-wrap justify-content-center m-3">
-        
         {TaskField.map((ele) => {
-          
           return (
             <>
               <div class="card w-75 shadow-sm m-2">
@@ -101,7 +102,10 @@ dialogElem.close();
                     <h4 className="h4">{ele}</h4>
                   </div>
                   <div>
-                    <button className="btn btn-primary rounded-0 shadow-sm" onClick={() => handleAddTask(ele)}>
+                    <button
+                      className="btn btn-primary rounded-0 shadow-sm"
+                      onClick={() => handleAddTask(ele)}
+                    >
                       Add Task
                     </button>
                   </div>
