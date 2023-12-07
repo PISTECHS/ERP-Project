@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import Fetchdata from "../Component/FetchData";
 import { useNavigate } from "react-router-dom";
 import { SalesSchema } from "../TaskManagement/ValidationSchemas";
+import BoxModel from "../Component/ComponentElement/BoxModel";
 
 function AddSales() {
   useEffect(() => {
@@ -10,34 +11,57 @@ function AddSales() {
   }, []);
   const [Mes, setMes] = useState("");
   const [ID, setID] = useState("E00");
+
   const Navigate = useNavigate();
 
-  const GetSalesID  = async() => {
-    setMes('')
-     try{
-      const resp = await Fetchdata('GET',"http://localhost:8080/GetLastSaleID")
-      if(resp.length>0){
-        setID(resp[0].ID + 1)
-      }else{
-        setID(resp.length + 1)
-      } 
-     }
-     catch(err){
-      console.log(err.message)
-     }
-  }
-
-    const SubmitSale = async(obj) => {
-    let OBJ = {...obj, ID}
-    // console.log(OBJ);
-      setMes('')
-      try {
-        const response = await Fetchdata("post", "http://localhost:8080/AddSale", OBJ);
-         setMes(response.mes)
-      } catch (error) {
-        setMes(error.message)
+  const GetSalesID = async () => {
+    setMes("");
+    try {
+      const resp = await Fetchdata(
+        "GET",
+        "http://localhost:8080/GetLastSaleID"
+      );
+      if (resp.length > 0) {
+        setID(resp[0].ID + 1);
+      } else {
+        setID(resp.length + 1);
       }
+    } catch (err) {
+      console.log(err.message);
+      setMes(err.message)
+      handelOpenModelBox()
     }
+  };
+
+  const SubmitSale = async (obj) => {
+    let OBJ = { ...obj, ID };
+    // console.log(OBJ);
+    setMes("");
+    try {
+      const response = await Fetchdata(
+        "post",
+        "http://localhost:8080/AddSale",
+        OBJ
+      );
+ 
+      setMes(response.mes)
+      handelOpenModelBox()
+    } catch (error) {
+      setMes(error.message);
+      handelOpenModelBox()
+    }
+  };
+
+  const handelOpenModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.showModal();
+  };
+
+  const handelCloseModelBox = () => {
+    let dialogElem = document.getElementById("dialog");
+    dialogElem.close();
+  };
+
 
   const AddExpenseValues = {
     ProductName: "",
@@ -52,8 +76,8 @@ function AddSales() {
     initialValues: AddExpenseValues,
     validationSchema: SalesSchema,
     onSubmit: (values) => {
-    //   console.log(values);
-     SubmitSale(values)
+      //   console.log(values);
+      SubmitSale(values);
     },
   });
   return (
@@ -69,7 +93,7 @@ function AddSales() {
               <div>
                 <button
                   className="btn btn-danger rounded-0"
-                  onClick={() => Navigate('/services/sales')}
+                  onClick={() => Navigate("/services/sales")}
                 >
                   Sales List
                 </button>
@@ -136,9 +160,7 @@ function AddSales() {
                     </select>
                   </div>
                   {formik.touched.SaleType && formik.errors.SaleType ? (
-                    <div className="text-danger">
-                      {formik.errors.SaleType}
-                    </div>
+                    <div className="text-danger">{formik.errors.SaleType}</div>
                   ) : null}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
@@ -155,9 +177,7 @@ function AddSales() {
                     />
                   </div>
                   {formik.touched.SaleDate && formik.errors.SaleDate ? (
-                    <div className="text-danger">
-                      {formik.errors.SaleDate}
-                    </div>
+                    <div className="text-danger">{formik.errors.SaleDate}</div>
                   ) : null}
                 </div>
               </div>
@@ -176,9 +196,7 @@ function AddSales() {
                     />
                   </div>
                   {formik.touched.SaleMonth && formik.errors.SaleMonth ? (
-                    <div className="text-danger">
-                      {formik.errors.SaleMonth}
-                    </div>
+                    <div className="text-danger">{formik.errors.SaleMonth}</div>
                   ) : null}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
@@ -194,8 +212,7 @@ function AddSales() {
                       value={formik.values.SaleAmount}
                     />
                   </div>
-                  {formik.touched.SaleAmount &&
-                  formik.errors.SaleAmount ? (
+                  {formik.touched.SaleAmount && formik.errors.SaleAmount ? (
                     <div className="text-danger">
                       {formik.errors.SaleAmount}
                     </div>
@@ -204,7 +221,7 @@ function AddSales() {
               </div>
 
               <div className="row d-flex flex-wrap col-12 mt-2">
-              <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
                     <h6 className="h6 mt-2">Sale By</h6>
                   </div>
@@ -218,13 +235,11 @@ function AddSales() {
                     />
                   </div>
                   {formik.touched.SaleBy && formik.errors.SaleBy ? (
-                    <div className="text-danger">
-                      {formik.errors.SaleBy}
-                    </div>
+                    <div className="text-danger">{formik.errors.SaleBy}</div>
                   ) : null}
                 </div>
               </div>
-              
+
               <div className="m-5 text-center">
                 {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>}
                 <button
@@ -234,6 +249,13 @@ function AddSales() {
                   Submit
                 </button>
               </div>
+
+              <dialog
+                className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+                id="dialog"
+              >
+                <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+              </dialog>
             </div>
           </div>
         </form>

@@ -5,13 +5,13 @@ const server = express();
 const { MongoClient } = require("mongodb");
 
 const bcrypt = require("bcrypt");
-let saltRound = 10; 
+let saltRound = 10;
 
-//TaskManagement Functions 
+//TaskManagement Functions
 const {
   RegisterUser,
   RegisterUsersList,
-  DeleteUser,  
+  DeleteUser,
   GEtLastUserID,
   UpdateUserRecord,
   RegisterTask,
@@ -20,7 +20,7 @@ const {
   UpdateTaskRecord,
   TaskProjectlist,
   TaskUsers,
-  GetLastTaskID
+  GetLastTaskID,
 } = require("./TaskManagement");
 
 //Sales & Expense Record
@@ -35,8 +35,7 @@ const {
   AddSale,
   SalesList,
   UpdateSales,
-  DeleteSale
-  
+  DeleteSale,
 } = require("./Sales&Expense");
 
 //Project Management
@@ -45,21 +44,40 @@ const {
   GetLastProjectID,
   ProjectList,
   DeleteProject,
-  UpdateProject
+  UpdateProject,
 } = require("./ProjectManagement");
-
 
 //Project Management
 const {
   AddField,
   FieldList,
   GetLastFieldID,
-  DeleteField
+  DeleteField,
 } = require("./ManageField");
 
+//Email Sender
 
+const { SendEmail } = require("./EmailSender");
 
+// Register Company
 
+const {
+  RegisterCompany,
+  GetLastCompanyID,
+  RegisterCompanyList,
+  DeleteCompany,
+  UpdateCompany,
+} = require("./CompanyManagement");
+
+// Payment
+
+const {
+  AddInvoice,
+  RegisterPaymentList,
+  DeleteInvoice,
+  UpdateInvoice,
+  AddPayment
+} = require("./Paymnent");
 
 server.use(cors());
 server.use(bodyParse.json());
@@ -67,7 +85,7 @@ server.use(express.json());
 
 let ConnectionFunc = async () => {
   // const url = `mongodb+srv://fa7711598:no01gVHy9SIQjGSN@cluster0.wrjtyys.mongodb.net/`;
-  const url = `mongodb+srv://fa7711598:bekcflaHuPdiuYfT@cluster0.cxkipa1.mongodb.net/?retryWrites=true&w=majority`
+  const url = `mongodb+srv://fa7711598:bekcflaHuPdiuYfT@cluster0.cxkipa1.mongodb.net/?retryWrites=true&w=majority`;
   const client = new MongoClient(url);
   return client;
 };
@@ -76,7 +94,7 @@ let UserLogin = async (username, password) => {
   let client = await ConnectionFunc();
   let res = await client.connect();
   let database = res.db("TaskManager").collection("RegisterUser");
-  
+
   const user = await database.findOne({ Username: username });
   if (!user) {
     return { success: false, mes: "User not found" };
@@ -95,26 +113,25 @@ server.post("/registeruser", async (req, resp) => {
   let hashPass = bcrypt.hashSync("pistechs12345", salt);
 
   let Data = {
-    Name: req.body.EmpName, 
+    Name: req.body.EmpName,
     ID: req.body.EmpID,
     Username: `EMP-${req.body.EmpID}@${req.body.EmpPosition}.pistechs.com`,
     Type: req.body.EmpType,
-    Field: req.body.EmpField, 
+    Field: req.body.EmpField,
     Email: req.body.EmpEmail,
     Role: req.body.EmpPosition,
     ContactNo: req.body.EmpContactNo,
     Status: "Active",
-    Password: hashPass, 
+    Password: hashPass,
   };
 
   let result = await Promise.resolve(RegisterUser(ConnectionFunc, Data)).then(
     (res) => {
       return res;
     }
-  );   
+  );
   resp.json(result);
 });
-
 
 server.post("/updaterecord", async (req, resp) => {
   let result = await Promise.resolve(
@@ -123,17 +140,16 @@ server.post("/updaterecord", async (req, resp) => {
     return res;
   });
   // console.log(result);
-  resp.json(result)
+  resp.json(result);
 });
 
 server.post("/deleteuser", async (req, resp) => {
-  
   let result = await Promise.resolve(
     DeleteUser(ConnectionFunc, req.body.Username)
   ).then((res) => {
-    return res; 
-  }); 
-  resp.json(result); 
+    return res;
+  });
+  resp.json(result);
 });
 
 server.get("/userlist", async (req, resp) => {
@@ -146,7 +162,6 @@ server.get("/userlist", async (req, resp) => {
   resp.json(result);
 });
 
-
 server.get("/TaskProjectlist", async (req, resp) => {
   let result = await Promise.resolve(TaskProjectlist(ConnectionFunc)).then(
     (res) => {
@@ -156,7 +171,6 @@ server.get("/TaskProjectlist", async (req, resp) => {
   resp.json(result);
 });
 
-
 server.post("/TaskUsers", async (req, resp) => {
   // console.log(req.body.Field);
   let result = await Promise.resolve(TaskUsers(ConnectionFunc, req.body)).then(
@@ -165,22 +179,19 @@ server.post("/TaskUsers", async (req, resp) => {
     }
   );
   resp.json(result);
+});
 
-}); 
-
-server.get("/GEtLastUserID", async (req, resp) => { 
+server.get("/GEtLastUserID", async (req, resp) => {
   let result = await Promise.resolve(GEtLastUserID(ConnectionFunc)).then(
     (res) => {
       return res;
     }
   );
   // console.log(result);
-  resp.json(result);  
-
+  resp.json(result);
 });
 
-
- //Task Management 
+//Task Management
 
 server.get("/GetTaskList", async (req, resp) => {
   let result = await Promise.resolve(GetTaskList(ConnectionFunc)).then(
@@ -190,54 +201,52 @@ server.get("/GetTaskList", async (req, resp) => {
   );
   resp.json(result);
 });
- 
- server.get("/GetLastTaskID", async (req, resp) => {
-  let result = await Promise.resolve(GetLastTaskID(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  )
+
+server.get("/GetLastTaskID", async (req, resp) => {
+  let result = await Promise.resolve(
+    GetLastTaskID(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   // console.log(result);
-  resp.json(result);
-}); 
-
-
-server.post("/RegisterTask", async (req, resp) => {
-  let result = await Promise.resolve(RegisterTask(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res; 
-    } 
-  );
   resp.json(result);
 });
 
+server.post("/RegisterTask", async (req, resp) => {
+  let result = await Promise.resolve(
+    RegisterTask(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
 
 server.post("/DeleteTask", async (req, resp) => {
-  let result = await Promise.resolve(DeleteTask(ConnectionFunc, req.body.TaskID)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    DeleteTask(ConnectionFunc, req.body.TaskID)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
 server.post("/UpdateTaskRecord", async (req, resp) => {
-  let result = await Promise.resolve(UpdateTaskRecord(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    UpdateTaskRecord(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
 // Sales & Expense
 
 server.get("/GetLastExpenseID", async (req, resp) => {
-  let result = await Promise.resolve(GetLastExpenseID(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    GetLastExpenseID(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
@@ -261,36 +270,31 @@ server.get("/ExpensesList", async (req, resp) => {
 });
 
 server.post("/DeleteExpense", async (req, resp) => {
-  let result = await Promise.resolve(DeleteExpense(ConnectionFunc, req.body.ID)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    DeleteExpense(ConnectionFunc, req.body.ID)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
-
-
 
 server.post("/UpdateExpenses", async (req, resp) => {
-  let result = await Promise.resolve(UpdateExpenses(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    UpdateExpenses(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
-
-
 
 server.get("/GetLastSaleID", async (req, resp) => {
-  let result = await Promise.resolve(GetLastSaleID(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    GetLastSaleID(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
-
 
 server.post("/AddSale", async (req, resp) => {
   let result = await Promise.resolve(AddSale(ConnectionFunc, req.body)).then(
@@ -302,32 +306,28 @@ server.post("/AddSale", async (req, resp) => {
 });
 
 server.get("/SalesList", async (req, resp) => {
-  let result = await Promise.resolve(SalesList(ConnectionFunc)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(SalesList(ConnectionFunc)).then((res) => {
+    return res;
+  });
   // console.log(result);
   resp.json(result);
 });
 
-
 server.post("/UpdateSales", async (req, resp) => {
-  let result = await Promise.resolve(UpdateSales(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    UpdateSales(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
-
 server.post("/DeleteSale", async (req, resp) => {
-  let result = await Promise.resolve(DeleteSale(ConnectionFunc, req.body.ID)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    DeleteSale(ConnectionFunc, req.body.ID)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
@@ -342,11 +342,11 @@ server.post("/AddProject", async (req, resp) => {
 });
 
 server.get("/GetLastProjectID", async (req, resp) => {
-  let result = await Promise.resolve(GetLastProjectID(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    GetLastProjectID(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
@@ -360,25 +360,24 @@ server.get("/ProjectList", async (req, resp) => {
 });
 
 server.post("/DeleteProject", async (req, resp) => {
-  let result = await Promise.resolve(DeleteProject(ConnectionFunc, req.body.ID)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    DeleteProject(ConnectionFunc, req.body.ID)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
 server.post("/UpdateProject", async (req, resp) => {
-  let result = await Promise.resolve(UpdateProject(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(
+    UpdateProject(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
 //ManageField
-
 
 server.post("/AddField", async (req, resp) => {
   let result = await Promise.resolve(AddField(ConnectionFunc, req.body)).then(
@@ -389,35 +388,144 @@ server.post("/AddField", async (req, resp) => {
   resp.json(result);
 });
 
-
 server.get("/FieldList", async (req, resp) => {
-  let result = await Promise.resolve(FieldList(ConnectionFunc)).then(
-    (res) => {
-      return res;
-    }
-  );
+  let result = await Promise.resolve(FieldList(ConnectionFunc)).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
-
 server.post("/DeleteField", async (req, resp) => {
-  let result = await Promise.resolve(DeleteField(ConnectionFunc, req.body.ID)).then(
-    (res) => {
-      return res;
-    }
-  ); 
+  let result = await Promise.resolve(
+    DeleteField(ConnectionFunc, req.body.ID)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
 server.get("/GetLastFieldID", async (req, resp) => {
-  let result = await Promise.resolve(GetLastFieldID(ConnectionFunc, req.body)).then(
+  let result = await Promise.resolve(
+    GetLastFieldID(ConnectionFunc, req.body)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+//Send Email
+
+server.post("/sendemail", async (req, resp) => {
+  console.log(req.body);
+  let result = await Promise.resolve(SendEmail(req.body)).then((res) => {
+    return res;
+  });
+  console.log("send email ....");
+  // resp.json(result);
+});
+
+// Company Management
+
+server.post("/registercomapny", async (req, resp) => {
+  let result = await Promise.resolve(
+    RegisterCompany(ConnectionFunc, req.body, req.body.CompanyID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+server.get("/GetLastCompanyID", async (req, resp) => {
+  let result = await Promise.resolve(GetLastCompanyID(ConnectionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  // console.log(result);
+  resp.json(result);
+});
+
+server.get("/registercompanylist", async (req, resp) => {
+  let result = await Promise.resolve(RegisterCompanyList(ConnectionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  // console.log(result);
+  resp.json(result);
+});
+
+server.post("/deletecompany", async (req, resp) => {
+  let result = await Promise.resolve(
+    DeleteCompany(ConnectionFunc, req.body.CompanyID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+server.post("/updatecompany", async (req, resp) => {
+  // console.log(req.body.CompanyID)
+  let result = await Promise.resolve(
+    UpdateCompany(ConnectionFunc, req.body, req.body.CompanyID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+// Payment Function
+
+server.post("/addinvoice", async (req, resp) => {
+  // console.log(req.body.InvoiceID)
+  let result = await Promise.resolve(
+    AddInvoice(ConnectionFunc, req.body, req.body.InvoiceID)
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
+  resp.json(result);
+});
+
+server.get("/registerpaymentlist", async (req, resp) => {
+  let result = await Promise.resolve(RegisterPaymentList(ConnectionFunc)).then(
     (res) => {
       return res;
     }
   );
   resp.json(result);
-}); 
+});
 
+server.post("/deleteinvoice", async (req, resp) => {
+  // console.log("called .. ");
+  // console.log(req.body);
+  let result = await Promise.resolve(
+    DeleteInvoice(ConnectionFunc, req.body.InvoiceID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+
+server.post("/updateinvoice", async (req, resp) => {
+  let result = await Promise.resolve(
+    UpdateInvoice(ConnectionFunc, req.body, req.body.InvoiceID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+
+server.post("/addpayment", async (req, resp) => {
+  let result = await Promise.resolve(
+    AddPayment(ConnectionFunc, req.body, req.body.PaymentID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
 
 
 server.post("/userlogin", async (req, resp) => {

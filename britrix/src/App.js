@@ -32,6 +32,16 @@ import EmailPage from "./Communication/EmailPage";
 import ManageAnalytics from "./Analytics/ManageAnalytics";
 import UserAnalytics from "./Analytics/UserAnalytics";
 import FinanceAnalytics from "./Analytics/FinanceAnalytics";
+import TrackTask from "./Analytics/TrackTask";
+import AddCompanies from "./ManageCompanies/AddCompanies";
+import ViewCompanies from "./ManageCompanies/ViewCompanies";
+import UpdateCompany from "./ManageCompanies/UpdateCompany";
+import ManagePayment from "./Payment/ManagePayment";
+import AddPayment from "./Payment/AddPayment";
+import AddInvoice from "./Payment/AddInvoice";
+import UpdateInvoice from "./Payment/UpdateInvoice"
+
+
 
 function App() {
   const router = createBrowserRouter(
@@ -86,6 +96,28 @@ function App() {
              <Route path="manage" element={<ManageAnalytics />} />
              <Route path="user" element={<UserAnalytics />} />
              <Route path="finance" element={<FinanceAnalytics />} />
+             <Route path="task" element={<TrackTask />} />
+          </Route>
+
+          {/* {Companies Management} */}
+          <Route path="services">
+              <Route path="companies/view" element={<ViewCompanies />} />
+              <Route path="companies/add" element={<AddCompanies />} />
+              <Route path="companies/update" element={<UpdateCompany />} />
+          </Route>
+
+          <Route path="services">
+              <Route path="manage" element={<ViewCompanies />} />
+              <Route path="companies/add" element={<AddCompanies />} />
+              <Route path="companies/update" element={<UpdateCompany />} />
+          </Route>
+          
+
+          <Route path="services">
+              <Route path="payment/manage" element={<ManagePayment />} />
+              <Route path="payment/add" element={<AddPayment />} />
+              <Route path="invoice/add" element={<AddInvoice />} />
+              <Route path="invoice/update" element={<UpdateInvoice />} />
           </Route>
         </Route>
       </Route>

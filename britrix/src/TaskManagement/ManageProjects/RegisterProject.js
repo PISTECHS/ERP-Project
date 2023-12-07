@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useFormik } from "formik";
 import { RegisterProjectSchema } from "../ValidationSchemas";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
 import BoxModel from "../../Component/ComponentElement/BoxModel";
 
@@ -11,6 +11,7 @@ function RegisterProject() {
   const [ID, setID] = useState('0')
   const Navigate = useNavigate()
   const [FieldList, setFieldList] = useState([])
+  const [CompanyList, setCompanyList] = useState([])
 
   useEffect(() => {
     runProject()
@@ -19,6 +20,7 @@ function RegisterProject() {
   const runProject = async() => {
     await LastID()
     await GetFieldList()
+    await GetCompanyList()
   }
   const GetFieldList = async () => {
     try {
@@ -67,6 +69,28 @@ function RegisterProject() {
     }
   }
 
+  const GetCompanyList = async () => {
+    try {
+      const response = await Fetchdata(
+        "GET",
+        "http://localhost:8080/registercompanylist"
+      );
+      if (response.length < 1) {
+        setMes(<p>No Company Founed Kindly <Link to={'/services/companies/add'}>Register Company</Link></p>);
+        // setDisplay("none");
+        handelOpenModelBox();
+      } else {
+        console.log(response);
+        setCompanyList(response)
+      }
+    } catch (err) {
+        // console.log(err.message);
+        setMes(err.message);
+        handelOpenModelBox();
+       
+    }
+  };
+
 
   const handelOpenModelBox = () => {
     let dialogElem = document.getElementById("dialog");
@@ -101,6 +125,8 @@ function RegisterProject() {
       AddProject(values)
     },
   });
+
+
   return (
     <>
       <div className="conatainer m-4">
@@ -144,8 +170,7 @@ function RegisterProject() {
                       name="ProjectField"
                       className="form-control shadow-sm"
                       onChange={formik.handleChange}
-                      value={formik.values.ProjectField}
-                      
+                      value={formik.values.ProjectField}  
                     >
                       <option className="dropdown-item" value="">
                         --Choose an option--
@@ -321,13 +346,34 @@ function RegisterProject() {
                     <h6 className="h6 mt-2">Company</h6>
                   </div>
                   <div className="col-lg-8 col-12">
-                  <input
+                  {/* <input
                       className="form-control h-100 shadow-sm"
                       type="text"
                       name="Company"
                       onChange={formik.handleChange}
                       value={formik.values.Company}
-                    />
+                    /> */}
+                    <select
+                      name="Company"
+                      className="form-control shadow-sm"
+                      onChange={formik.handleChange}
+                      value={formik.values.Company}
+                    >
+                     <option className="dropdown-item" value=" ">
+                        Select Company
+                      </option>
+                    {
+                        CompanyList.map((ele) => {
+                          return(
+                            <>
+                            <option className="dropdown-item" value={ele.CompanyName}>
+                        {ele.CompanyName}
+                      </option>
+                            </>
+                          )
+                        })
+                      }
+                      </select>
                   </div>
                   {formik.touched.Company && formik.errors.Company ? (
                     <div className="text-danger">{formik.errors.Company}</div>

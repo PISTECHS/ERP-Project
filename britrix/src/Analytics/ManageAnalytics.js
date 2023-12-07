@@ -15,10 +15,10 @@ const ManageAnalytics = () => {
             <h3> Analytics</h3>
           </div>
           <div>
-            <button className="btn btn-warning rounded-0">Services</button>
+            <button className="btn btn-warning rounded-0"  onClick={() => Navigate("/services")}>Services</button>
           </div>
         </div>
-        <div className="body d-flex justify-content-center gap-3 m-2">
+        <div className="body d-flex justify-content-center gap-3 m-2 flex-wrap">
           <div
             className="card rounded-0 text-center shadow-sm p-2"
             style={{ width: "18rem" }}
@@ -104,7 +104,7 @@ const ManageAnalytics = () => {
                 Priorties, Progress, Types
               </p>
             </div>
-            <div><button className="btn btn-outline-dark rounded-0 shadow-sm">OPEN</button></div>
+            <div><button className="btn btn-outline-dark rounded-0 shadow-sm" onClick={() => Navigate('/analytics/task')}>OPEN</button></div>
           </div>
         </div>
       </div>

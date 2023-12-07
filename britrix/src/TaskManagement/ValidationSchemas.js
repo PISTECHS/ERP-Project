@@ -68,3 +68,40 @@ export const SalesSchema = Yup.object({
     SaleType: Yup.string().required('Type is Required'),
     SaleBy: Yup.string().required('Sale By is Required'),
 });
+
+
+export const EmailPageSchema = Yup.object({
+    Sender: Yup.string().email().required('Sending Email is Required'),
+    Reciever: Yup.string().email().required('Reciver Email is Required'),
+    Subject: Yup.string().required('Email Subject is Required'),
+    Message: Yup.string().required('Email Message By is Required'),
+});
+
+export const CompanySchema = Yup.object({
+    CompanyName: Yup.string().required(' Name is Required'),
+    CompanyType: Yup.string().required(' Type is Required'),
+    CompanyPhno: Yup.number().required(' Phno is Required'),
+    CompanyEmail: Yup.string().email().required(' Email is Required'),
+    CompanyMonth: Yup.string().required('Register Month is Required'),
+    CompanyLocation: Yup.string().required('Location is Required'),
+});
+
+export const InvoiceSchema = Yup.object({
+    CompanyName: Yup.string().required('Company Name is Required'),
+    TotalPayment: Yup.number().positive().required('Total Payment is Required'),
+    ProjectName: Yup.string().required('Project Name is Required'),
+    PaymentDeadline: Yup.string().required('Company Name is Required'),
+    PaymentStatus: Yup.string().required('Project Status is Required'),
+    Date: Yup.string().required('Date is Required'),
+    Month: Yup.string().required('Month is Required'),
+});
+
+export const PaymentSchema =  Yup.object({
+    InvoiceID: Yup.number().positive().required('Invoice ID is Required'),
+    PaymentAmmount :Yup.number().positive().required('Payment Ammount is Required'),
+    AcceptedBy : Yup.string().required('Accepted Person is Required'),
+    PaymentType : Yup.string().required('Payment Type is Required'),
+    Date: Yup.string().required(' Date is Required'),
+    Month: Yup.string().required('Month is Required'),
+    Company: Yup.string().required('Company is Required'),
+})

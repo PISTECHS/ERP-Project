@@ -106,7 +106,9 @@ const UserAnalytics = () => {
           </div>
           <div className="d-flex gap-2">
             <div>
-              <button className="btn btn-warning rounded-0">Services</button>
+              <button className="btn btn-warning rounded-0"
+              onClick={() => Navigate("/services")}
+              >Services</button>
             </div>
             <div>
               <button
@@ -118,7 +120,7 @@ const UserAnalytics = () => {
             </div>
           </div>
         </div>
-        <div className="filters col-5 d-flex gap-3">
+        <div className="filters d-flex gap-3">
           <div>
             <select
               className="form-control shadow-sm"
@@ -161,7 +163,7 @@ const UserAnalytics = () => {
         <div className={CardDisplay}>
               <LoadingSpinner />
             </div>
-          <div class="card shadow-sm border-2 m-3 w-50">
+          <div class="card shadow-sm border-2 m-5">
             
             <div className="card-body">
               {EmpData.map((key) => {

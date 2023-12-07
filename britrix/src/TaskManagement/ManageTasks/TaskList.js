@@ -128,7 +128,7 @@ function TaskList() {
       <div
         className={` ${
           CardDisplay === "d-none" ? "d-flex" : "d-none"
-        } justify-content-center gap-2`}
+        } justify-content-center flex-wrap gap-2`}
       >
         <dialog
           className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"

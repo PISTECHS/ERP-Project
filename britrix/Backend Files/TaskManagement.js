@@ -173,7 +173,7 @@ const DeleteTask = async (ConnectionFunc, TaskID) => {
     "RegisterTask",
     filter
   );
-  return result;
+  return result; 
 };
 
 const UpdateTaskRecord = async (Connection, obj) => {
