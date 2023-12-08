@@ -29,6 +29,10 @@ function AddExpenses() {
         handelOpenModelBox()
      }
   }
+  
+
+
+
 
     const SubmitExpense = async(obj) => {
     let OBJ = {...obj, ID:ExpenseID}

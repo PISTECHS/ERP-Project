@@ -43,6 +43,7 @@ const UpdateQuery = async (Connection, DB, Collection, filter, Obj) => {
 };
 
 const LastUser = async (Connection, DB, Collection, fields) => {
+
   let client = await Connection();
   let res = await client.connect();
   let database = await res.db(DB).collection(Collection);

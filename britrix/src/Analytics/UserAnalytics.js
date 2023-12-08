@@ -52,12 +52,12 @@ const UserAnalytics = () => {
     setSelectedEmp(selected_user);
     var userTasks = [];
     if (SelectMonth) {
-      userTasks = FilterData.filter(
+      userTasks = [...FilterData].filter(
         (task) =>
           task.TaskAllocation === selected_user && task.Month === SelectMonth
       );
     } else {
-      userTasks = FilterData.filter(
+      userTasks = [...FilterData].filter(
         (task) => task.TaskAllocation === selected_user
       );
     }
@@ -85,6 +85,8 @@ const UserAnalytics = () => {
     // console.log(taskCounts);
     setEmpData(taskCounts);
   };
+
+  
 
   const handelOpenModelBox = () => {
     let dialogElem = document.getElementById("dialog");
@@ -123,7 +125,7 @@ const UserAnalytics = () => {
         <div className="filters d-flex gap-3">
           <div>
             <select
-              className="form-control shadow-sm"
+              className="form-control shadow-sm rounded-0 "
               onChange={(e) => hanldeEmployeeList(e.target.value)}
               // value={Priority}
             >
@@ -141,7 +143,7 @@ const UserAnalytics = () => {
           </div>
           <div>
             <input
-              className="form-control h-100 shadow-sm"
+              className="form-control h-100 shadow-sm rounded-0"
               type="month"
               name="Month"
               onChange={(e) => {
@@ -182,7 +184,7 @@ const UserAnalytics = () => {
                       </h6>
                       <h6 className="h6">
                         <b>Medium Priority : </b>
-                        {key.mediumPriorityPriority}
+                        {key.mediumPriority}
                       </h6>
                       <h6 className="h6">
                         <b>Low Priority : </b>

@@ -80,7 +80,7 @@ function RegisterProject() {
         // setDisplay("none");
         handelOpenModelBox();
       } else {
-        console.log(response);
+        // console.log(response);
         setCompanyList(response)
       }
     } catch (err) {

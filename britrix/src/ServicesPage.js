@@ -4,15 +4,12 @@ import ServicesCards from "./Component/ServicesCards";
 function ServicesPage() {
     const ServicesList = [
         { Title: "Task Management", subTitle: "Team & Tasks Management", url: '/services/task' },
-        { Title: "CRM", subTitle: "Customer Relationship" },
-        { Title: "Communication", subTitle: "Social Collaboration" },
-        { Title: "Email", subTitle: "Integration  & Conversation", url: '/services/email' },
+        { Title: "Communication", subTitle: "Send Email Messages", url: '/services/email' },
         { Title: "Payment", subTitle: " Manage Payment", url: '/services/payment/manage' },
-        { Title: "Companies Managemnt", subTitle: "Manage Companies Record" , url: '/services/companies/view' },
-        { Title: "Sales", subTitle: "Products Inventory Payments", url: '/services/expenses' },
+        { Title: "CRM ", subTitle: "Manage Customers Record" , url: '/services/companies/view' },
+        { Title: "Expense", subTitle: "Expense Record Management", url: '/services/expenses' },
         { Title: "Analytics", subTitle: "Report Performance tracking", url:'/analytics/manage' },
         { Title: "Customer", subTitle: " Support Self-Service Support" },
-        { Title: "Media", subTitle: "  Media Management & analytics." },
       ];
       return (
         <>

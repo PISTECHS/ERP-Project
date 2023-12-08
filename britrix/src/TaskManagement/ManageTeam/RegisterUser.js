@@ -280,6 +280,13 @@ function RegisterUser() {
                       <option className="dropdown-item" value="Manager">
                         Manager
                       </option>
+                      
+                      <option
+                              className="dropdown-item"
+                              value="Manager"
+                            >
+                              Finance
+                            </option>
                     </select>
                   </div>
                   {formik.touched.EmpPosition && formik.errors.EmpPosition ? (

@@ -41,6 +41,8 @@ const ManagePayment = () => {
     }
   };
 
+ 
+
   const handleDeleteFunc = async (InvoiceID) => {
     try {
       const response = await Fetchdata(
@@ -53,6 +55,7 @@ const ManagePayment = () => {
       // setDisplay("flex");
       handelOpenModelBox();
       GetPaymentList()
+      
     } catch (err) {
         setMes(err.message);
         handelOpenModelBox();
@@ -75,7 +78,7 @@ const ManagePayment = () => {
     <>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div>
-          <h3>Manage Payment</h3>
+          <h3>Manage Invoices</h3>
         </div>
         <div className="d-flex gap-2">
           <div>
@@ -143,7 +146,7 @@ const ManagePayment = () => {
                   <>
                     <tr key={index}>
                       <th>{ele.InvoiceID}</th>
-                      <th>{ele.CompanyName}</th>
+                      <th>{ele.CompanyName}</th> 
                       <td>{ele.ProjectName}</td>
                       <td>{ele.TotalPayment}</td>
                       <td>{ele.PaymentStatus}</td>
@@ -171,7 +174,7 @@ const ManagePayment = () => {
                           <button
                             className="btn btn-success p-1 m-1 rounded-0"
                             onClick={() =>
-                              Navigate("/services/payment/add", {
+                               Navigate("/services/payment/view", {
                                 state: ele,
                               })
                             }

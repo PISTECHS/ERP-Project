@@ -6,14 +6,6 @@ function TaskManagerPage() {
     {Title:'Manage Team', subTitle:'CRUD Team', url:'/services/task/team'},
     {Title:'Manage Projects', subTitle:'CRUD Projects', url:'/services/project/list'},
     {Title:'Manage Field', subTitle:'CRUD Field', url:'/services/field/manage'},
-    // {Title:'Gant Chart', subTitle:'Assign Tasks & Member'},
-    // {Title:'Task Dependencies', subTitle:'Set dependencies'},
-    // {Title:'Workload', subTitle:'Task Tracking'},
-    // {Title: 'Task Allocation', subTitle: 'Team Members'},
-    // {Title: 'Capacity & Availability', subTitle: 'Team Members'},
-    // {Title: 'Balancing Workload', subTitle: 'Work Balance Memeber'},
-    // {Title: 'Task Assignment', subTitle: 'Divide tasks'},
-    // {Title: 'Visualization', subTitle: ' Charts & Graphs'},
   ]
   return (
     <>

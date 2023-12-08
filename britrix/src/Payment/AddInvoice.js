@@ -7,17 +7,23 @@ import BoxModel from "../Component/ComponentElement/BoxModel";
 
 const AddInvoice = () => {
   useEffect(() => {
-    GetProjectList();
+    // GetProjectList();
+    MainRun()
   }, []);
 
   const Navigate = useNavigate();
-  const [InvoiceID, setInvoiceID] = useState(1);
+  const [InvoiceID, setInvoiceID] = useState(0);
   const [FilterData, setFilterData] = useState([]);
   const [Data, setData] = useState([]);
   const [Mes, setMes] = useState("");
   const [ProjectList, setProjectList] = useState([]);
 
+  
 
+  const MainRun = () => {
+    LastInvoiceID()
+    GetProjectList()
+  }
   const GetProjectList = async () => {
     try {
       const response = await Fetchdata(
@@ -41,6 +47,25 @@ const AddInvoice = () => {
       handelOpenModelBox();
     }
   };
+
+
+  const LastInvoiceID = async() => {
+    try {
+      const response = await Fetchdata(
+        "GET",
+        "http://localhost:8080/getlastinvoiceID"
+      );
+      if (response.length > 0) {
+       setInvoiceID(response[0].InvoiceID + 1);
+      } else {
+        setInvoiceID(response.length + 1);
+      }
+      // console.log(response);
+    }
+     catch(err) {
+      console.log(err.message);
+     }
+  }
 
     const addInvoice = async (obj) => {
       try {
@@ -84,6 +109,8 @@ const AddInvoice = () => {
     PaymentStatus: "",
     Date: "",
     Month: "",
+    SaleType: "",
+    AddBy: ""
   };
 
   const formik = useFormik({
@@ -134,7 +161,7 @@ const AddInvoice = () => {
                       type="text"
                       name="ID"
                       value={InvoiceID}
-                      //   readOnly
+                        readOnly
                       onChange={(e) => setInvoiceID(e.target.value)}
                     />
                   </div>
@@ -308,6 +335,23 @@ const AddInvoice = () => {
                     </div>
                   ) : null}
                 </div>
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                  <div className="col-lg-4 col-12">
+                    <h6 className="h6 mt-2">Add By</h6>
+                  </div>
+                  <div className="col-lg-8 col-12">
+                    <input
+                      className="form-control h-100 shadow-sm"
+                      type="text"
+                      name="AddBy"
+                      onChange={formik.handleChange}
+                      value={formik.values.AddBy}
+                    />
+                  </div>
+                  {formik.touched.AddBy && formik.errors.AddBy ? (
+                    <div className="text-danger">{formik.errors.AddBy}</div>
+                  ) : null}
+                </div>
               </div>
 
               <div className="row d-flex flex-wrap col-12 mt-2">
@@ -328,7 +372,37 @@ const AddInvoice = () => {
                     <div className="text-danger">{formik.errors.Date}</div>
                   ) : null}
                 </div>
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                  <div className="col-lg-4 col-12">
+                    <h6 className="h6 mt-2">Sale Type</h6>
+                  </div>
+                  <div className="col-lg-8 col-12">
+                  <select
+                      name="SaleType"
+                      className="form-control shadow-sm"
+                      onChange={formik.handleChange}
+                      value={formik.values.SaleType}
+                    >
+                      <option className="dropdown-item" value="">
+                        --Choose an option--
+                      </option>
+                      <option className="dropdown-item" value="FixedExpense">
+                        Fixed Sale
+                      </option>
+                      <option className="dropdown-item" value="SavingExpense">
+                        Saving Sale
+                      </option>
+                    </select>
+                  </div>
+                  {formik.touched.SaleType && formik.errors.SaleType ? (
+                    <div className="text-danger">{formik.errors.SaleType}</div>
+                  ) : null}
+                </div>
+                
               </div>
+              
+
+              
 
               <div className="m-5 text-center">
                 {/* {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>} */}

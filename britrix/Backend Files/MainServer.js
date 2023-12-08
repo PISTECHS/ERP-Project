@@ -31,11 +31,12 @@ const {
   ExpensesList,
   DeleteExpense,
   UpdateExpenses,
-  GetLastSaleID,
-  AddSale,
-  SalesList,
-  UpdateSales,
-  DeleteSale,
+  FilterFinancePerson
+  // GetLastSaleID,
+  // AddSale,
+  // SalesList,
+  // UpdateSales,
+  // DeleteSale,
 } = require("./Sales&Expense");
 
 //Project Management
@@ -76,7 +77,11 @@ const {
   RegisterPaymentList,
   DeleteInvoice,
   UpdateInvoice,
-  AddPayment
+  AddPayment,
+  GetLastInvoiceID,
+  FilterPaymentRecord,
+  DeletePayment,
+  GetLastPaymentID
 } = require("./Paymnent");
 
 server.use(cors());
@@ -287,49 +292,49 @@ server.post("/UpdateExpenses", async (req, resp) => {
   resp.json(result);
 });
 
-server.get("/GetLastSaleID", async (req, resp) => {
-  let result = await Promise.resolve(
-    GetLastSaleID(ConnectionFunc, req.body)
-  ).then((res) => {
-    return res;
-  });
-  resp.json(result);
-});
+// server.get("/GetLastSaleID", async (req, resp) => {
+//   let result = await Promise.resolve(
+//     GetLastSaleID(ConnectionFunc, req.body)
+//   ).then((res) => {
+//     return res;
+//   });
+//   resp.json(result);
+// });
 
-server.post("/AddSale", async (req, resp) => {
-  let result = await Promise.resolve(AddSale(ConnectionFunc, req.body)).then(
-    (res) => {
-      return res;
-    }
-  );
-  resp.json(result);
-});
+// server.post("/AddSale", async (req, resp) => {
+//   let result = await Promise.resolve(AddSale(ConnectionFunc, req.body)).then(
+//     (res) => {
+//       return res;
+//     }
+//   );
+//   resp.json(result);
+// });
+ 
+// server.get("/SalesList", async (req, resp) => {
+//   let result = await Promise.resolve(SalesList(ConnectionFunc)).then((res) => {
+//     return res;
+//   });
+//   // console.log(result);
+//   resp.json(result);
+// });
 
-server.get("/SalesList", async (req, resp) => {
-  let result = await Promise.resolve(SalesList(ConnectionFunc)).then((res) => {
-    return res;
-  });
-  // console.log(result);
-  resp.json(result);
-});
+// server.post("/UpdateSales", async (req, resp) => {
+//   let result = await Promise.resolve(
+//     UpdateSales(ConnectionFunc, req.body)
+//   ).then((res) => {
+//     return res;
+//   });
+//   resp.json(result);
+// });
 
-server.post("/UpdateSales", async (req, resp) => {
-  let result = await Promise.resolve(
-    UpdateSales(ConnectionFunc, req.body)
-  ).then((res) => {
-    return res;
-  });
-  resp.json(result);
-});
-
-server.post("/DeleteSale", async (req, resp) => {
-  let result = await Promise.resolve(
-    DeleteSale(ConnectionFunc, req.body.ID)
-  ).then((res) => {
-    return res;
-  });
-  resp.json(result);
-});
+// server.post("/DeleteSale", async (req, resp) => {
+//   let result = await Promise.resolve(
+//     DeleteSale(ConnectionFunc, req.body.ID)
+//   ).then((res) => {
+//     return res;
+//   });
+//   resp.json(result);
+// });
 
 //Project Management
 server.post("/AddProject", async (req, resp) => {
@@ -517,6 +522,17 @@ server.post("/updateinvoice", async (req, resp) => {
   resp.json(result);
 });
 
+server.get("/getlastinvoiceID", async (req, resp) => {
+  let result = await Promise.resolve(GetLastInvoiceID(ConnectionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  // console.log(result);
+  resp.json(result);
+});
+
+
 
 server.post("/addpayment", async (req, resp) => {
   let result = await Promise.resolve(
@@ -526,6 +542,54 @@ server.post("/addpayment", async (req, resp) => {
   });
   resp.json(result);
 });
+
+
+server.post("/filterpaymentrecord", async (req, resp) => {
+  // console.log(req.body.InvoiceID);
+  let result = await Promise.resolve(FilterPaymentRecord(ConnectionFunc, req.body.InvoiceID)).then(
+    (res) => {
+      return res;
+    }
+  );
+  // console.log(result);
+  resp.json(result);
+});
+
+
+
+server.get("/getlastpaymentid", async (req, resp) => {
+  let result = await Promise.resolve(GetLastPaymentID(ConnectionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+});
+
+server.post("/deletepayment", async (req, resp) => {
+  // console.log(req.body.PaymentID);
+  let result = await Promise.resolve(
+    DeletePayment(ConnectionFunc, req.body.PaymentID)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+
+server.post("/filterfinanceperson", async (req, resp) => {
+  
+  let result = await Promise.resolve(FilterFinancePerson(ConnectionFunc, req.body.Type)).then(
+    (res) => {
+      return res;
+    }
+  ); 
+  // console.log(result);
+  resp.json(result);
+});
+
+
+//Login
 
 
 server.post("/userlogin", async (req, resp) => {

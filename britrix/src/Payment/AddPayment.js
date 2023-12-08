@@ -7,10 +7,13 @@ import BoxModel from "../Component/ComponentElement/BoxModel";
 
 const AddPayment = () => {
    
+  useEffect(() => {
+    LastPaymentID()
+  },[])
 
 
   const Navigate = useNavigate();
-  const [PaymentID, setPaymentID] = useState(1);
+  const [PaymentID, setPaymentID] = useState();
   const [Mes, setMes] = useState('')
   const location = useLocation()
   const Data = location.state
@@ -43,6 +46,24 @@ const AddPayment = () => {
     let dialogElem = document.getElementById("dialog");
     dialogElem.close();
   }
+
+  const LastPaymentID = async() => {
+    try {
+      const response = await Fetchdata(
+        "GET",
+        "http://localhost:8080/getlastpaymentid"
+      );
+      if (response.length > 0) {
+        setPaymentID(response[0].PaymentID + 1);
+      } else {
+        setPaymentID(response.length + 1);
+      }
+    }
+     catch(err) {
+      console.log(err.message);
+     }
+  }
+
 
   const AddPaymentValues = {
     InvoiceID : Data.InvoiceID,
@@ -124,6 +145,8 @@ const AddPayment = () => {
                       className="form-control h-100 shadow-sm"
                       type="text"
                       value={PaymentID}
+                      // onChange={(e) => setPaymentID(e.target.value)}
+                      readOnly
                     />
                   </div>
 

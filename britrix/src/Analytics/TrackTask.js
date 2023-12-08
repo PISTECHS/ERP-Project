@@ -107,12 +107,12 @@ const TrackTask = () => {
   return (
     <>
       <div className="main">
-        <div className="head d-flex justify-content-around m-3">
+        <div className="head d-flex justify-content-around m-3 flex-wrap">
           <div>
             {" "}
             <h3>Task Analytics</h3>
           </div>
-          <div className="d-flex gap-2 ">
+          <div className="d-flex gap-2 m-2">
               <div><input
               type="month"
               className="form-control shadow-sm shadow-sm rounded-0"
@@ -123,7 +123,7 @@ const TrackTask = () => {
             </input></div>
              <div><button className="btn btn-danger rounded-0" onClick={() => ClearAll()}>Clear</button></div>
           </div>
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-2 m-2">
             <div>
               <button
                 className="btn btn-warning rounded-0"

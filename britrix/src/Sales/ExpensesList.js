@@ -80,9 +80,7 @@ function ExpensesList() {
 
         <div className="d-flex gap-3">
           <button className="btn btn-primary rounded-0" onClick={() => Navigate('/services/expenses/add')}>Add Expense</button>
-          <button className="btn btn-warning rounded-0 shadow-sm" onClick={() => Navigate('/services/sales')}>
-            Sales Record
-          </button>
+         
         </div>
       </div>
       

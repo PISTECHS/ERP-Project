@@ -21,9 +21,6 @@ import UpdateTask from "./TaskManagement/ManageTasks/UpdateTask";
 import ExpensesList from "./Sales/ExpensesList";
 import AddExpenses from "./Sales/AddExpenses";
 import UpdateExpense from "./Sales/UpdateExpense";
-import SalesList from "./Sales/SalesList";
-import AddSales from "./Sales/AddSales";
-import UpdateSales from "./Sales/UpdateSales";
 import ProjectList from "./TaskManagement/ManageProjects/ProjectList";
 import RegisterProject from "./TaskManagement/ManageProjects/RegisterProject";
 import UpdateProject from "./TaskManagement/ManageProjects/UpdateProject";
@@ -40,6 +37,7 @@ import ManagePayment from "./Payment/ManagePayment";
 import AddPayment from "./Payment/AddPayment";
 import AddInvoice from "./Payment/AddInvoice";
 import UpdateInvoice from "./Payment/UpdateInvoice"
+import ViewPayment from "./Payment/ViewPayment";
 
 
 
@@ -81,9 +79,7 @@ function App() {
             <Route path="expenses" element={<ExpensesList />} />
             <Route path="expenses/add" element={<AddExpenses />} />
             <Route path="expenses/update" element={<UpdateExpense />} />
-            <Route path="sales" element={<SalesList />} />
-            <Route path="sales/add" element={<AddSales />} />
-            <Route path="sales/update" element={<UpdateSales />} />
+          
           </Route>
 
           {/* Communication */}
@@ -118,6 +114,7 @@ function App() {
               <Route path="payment/add" element={<AddPayment />} />
               <Route path="invoice/add" element={<AddInvoice />} />
               <Route path="invoice/update" element={<UpdateInvoice />} />
+              <Route path="payment/view" element={<ViewPayment />} />
           </Route>
         </Route>
       </Route>

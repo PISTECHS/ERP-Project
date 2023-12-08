@@ -31,15 +31,15 @@ const FinanceAnalytics = () => {
     GetSalesList();
     GetExpenseList();
   };
-
+  
   const SalesValuesGenerate = (response) => {
     let SalesObj = [
       {
         totalSalesAmmount: response.reduce((acc, ele) => {
-          acc += parseInt(ele.SaleAmount, 10) || 0;
+          acc += parseInt(ele.TotalPayment, 10) || 0;
           return acc;
         }, 0),
-        totalSales: response.filter((ele) => ele.SaleAmount).length,
+        totalSales: response.filter((ele) => ele.TotalPayment).length,
         FixedSales: response.filter((ele) => ele.SaleType === "FixedExpense")
           .length,
         SavingSales: response.filter((ele) => ele.SaleType === "SavingSales")
@@ -53,13 +53,14 @@ const FinanceAnalytics = () => {
     try {
       const response = await Fetchdata(
         "GET",
-        "http://localhost:8080/SalesList"
+        "http://localhost:8080/registerpaymentlist"
       );
       if (response.length < 1) {
-        console.log(response);
         setMes('No Sale Record Found')
         handelOpenModelBox()
+        setCardDisplay("d-none");
       } else {
+        console.table(response);
         let SalesObj = SalesValuesGenerate(response);
         setCardDisplay("d-none");
         setSalesRecord(SalesObj);
@@ -74,6 +75,7 @@ const FinanceAnalytics = () => {
     }
   };
 
+ 
   const ExpenseValueGenerates = (response) => {
     let ExpenseObj = [
       {
@@ -103,6 +105,7 @@ const FinanceAnalytics = () => {
         console.log(response);
         setMes('No Expense Record Found')
         handelOpenModelBox()
+        setCardDisplay("d-none");
       } else {
         let ExpenseObj = ExpenseValueGenerates(response);
         setCardDisplay("d-none");
@@ -122,7 +125,7 @@ const FinanceAnalytics = () => {
   const hanldeMonthRecord = (mn) => {
     setMonth(mn);
     let FilterSale = FilterSaleRecordValue.filter(
-      (ele) => ele.SaleMonth === mn
+      (ele) => ele.Month === mn
     );
     let FilterExpense = FilterExpenseRecordValue.filter(
       (ele) => ele.ExpenseMonth === mn

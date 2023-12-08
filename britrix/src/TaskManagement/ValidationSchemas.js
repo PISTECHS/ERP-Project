@@ -94,6 +94,8 @@ export const InvoiceSchema = Yup.object({
     PaymentStatus: Yup.string().required('Project Status is Required'),
     Date: Yup.string().required('Date is Required'),
     Month: Yup.string().required('Month is Required'),
+    SaleType: Yup.string().required('Month is Required'),
+    AddBy: Yup.string().required('Add By is Required'),
 });
 
 export const PaymentSchema =  Yup.object({
