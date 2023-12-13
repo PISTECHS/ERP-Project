@@ -84,6 +84,13 @@ const {
   GetLastPaymentID
 } = require("./Paymnent");
 
+//Employee Module Task
+const {
+FilterEmployeeTask,
+FilterEmployeeInfo,
+UpdateEmployeeInfo
+} = require('./EmployeeModule')
+
 server.use(cors());
 server.use(bodyParse.json());
 server.use(express.json());
@@ -137,6 +144,33 @@ server.post("/registeruser", async (req, resp) => {
   );
   resp.json(result);
 });
+
+server.post("/updateuser", async (req, resp) => {
+  let salt = bcrypt.genSaltSync(saltRound);
+  let hashPass = bcrypt.hashSync(req.body.EmpPassword, salt); 
+  
+  let Data = {
+    Name: req.body.EmpName,
+    Username: req.body.EmpUsername,
+    Email: req.body.EmpEmail,
+    ContactNo: req.body.EmpContactNo,
+    Password: hashPass,
+  };
+
+  // console.log(Data);
+
+  let result = await Promise.resolve(UpdateEmployeeInfo(ConnectionFunc, Data)).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+
+});
+
+
+
+
 
 server.post("/updaterecord", async (req, resp) => {
   let result = await Promise.resolve(
@@ -424,8 +458,8 @@ server.post("/sendemail", async (req, resp) => {
   console.log(req.body);
   let result = await Promise.resolve(SendEmail(req.body)).then((res) => {
     return res;
-  });
-  console.log("send email ....");
+  }).then(res => console.log(res));
+  // console.log(result);
   // resp.json(result);
 });
 
@@ -446,7 +480,6 @@ server.get("/GetLastCompanyID", async (req, resp) => {
       return res;
     }
   );
-  // console.log(result);
   resp.json(result);
 });
 
@@ -587,6 +620,32 @@ server.post("/filterfinanceperson", async (req, resp) => {
   // console.log(result);
   resp.json(result);
 });
+
+
+// Employee Module
+
+
+server.post("/filteremployeetask", async (req, resp) => {
+  let result = await Promise.resolve(FilterEmployeeTask(ConnectionFunc, req.body.user)).then(
+    (res) => {
+      return res;
+    }
+  ); 
+  // console.log(result);
+  resp.json(result)
+})
+
+
+server.post("/filteremployeeinfo", async (req, resp) => {
+  // console.log(req.body);
+  let result = await Promise.resolve(FilterEmployeeInfo(ConnectionFunc, req.body.user)).then(
+    (res) => {
+      return res;
+    }
+  ); 
+  // console.log(result);
+  resp.json(result)
+})
 
 
 //Login

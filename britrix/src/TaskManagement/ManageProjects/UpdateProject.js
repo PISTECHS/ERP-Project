@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { RegisterProjectSchema } from "../ValidationSchemas";
 import { useNavigate, useLocation } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
-import BoxModel from "../../Component/ComponentElement/BoxModel";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../../Component/ComponentElement/BoxModel";
 
 function UpdateProject() {
   
@@ -11,37 +11,23 @@ function UpdateProject() {
   const Navigate = useNavigate()
   const location= useLocation()
 
-
   const UpdateData = async(obj) => {
-    // console.log(obj);
      setMes('')
      try{
       let response = await Fetchdata("post", "http://localhost:8080/UpdateProject", obj)
        setMes(response.mes)
-       handelOpenModelBox()
+       handelOpenModelBox("dialog");
      }
      catch(err){
-      console.log(err.message);
-      handelOpenModelBox()
+      setMes(err.message);
+      handelOpenModelBox("dialog");
      }
   }
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
-
    
   const RegisterProjectValues = {
     // ProjectID: '',
     ...location.state
   };
-  
 
   const formik = useFormik({
     initialValues: RegisterProjectValues,
@@ -55,7 +41,7 @@ function UpdateProject() {
     <>
       <div className="conatainer m-4">
       <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
-           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+           <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
        </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div

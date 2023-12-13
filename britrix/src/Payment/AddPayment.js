@@ -1,53 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import {  PaymentSchema } from "../TaskManagement/ValidationSchemas";
+import { PaymentSchema } from "../TaskManagement/ValidationSchemas";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {handelOpenModelBox, handelCloseModelBox} from "../Component/ComponentElement/BoxModel";
 
 const AddPayment = () => {
-   
   useEffect(() => {
-    LastPaymentID()
-  },[])
-
+    LastPaymentID();
+  }, []);
 
   const Navigate = useNavigate();
   const [PaymentID, setPaymentID] = useState();
-  const [Mes, setMes] = useState('')
-  const location = useLocation()
-  const Data = location.state
-   
-  
+  const [Mes, setMes] = useState("");
+  const location = useLocation();
+  const Data = location.state;
+
+  const OpenBox = (value) => {
+    setMes("");
+      setMes(value);
+      handelOpenModelBox("dialog");
+  };
 
   const InsertPayment = async (obj) => {
-    // console.log({...obj, PaymentID})
     try {
-      const resp = await Fetchdata(
-        "POST",
-        "http://localhost:8080/addpayment",
-        { ...obj, PaymentID  }
-      );
-      setMes(resp.mes);
-      handelOpenModelBox();
+      const resp = await Fetchdata("POST", "http://localhost:8080/addpayment", {
+        ...obj,
+        PaymentID,
+      });
+      OpenBox(resp.mes)
     } catch (err) {
-      console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
+      OpenBox(err.message)
     }
   };
 
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
-
-  const LastPaymentID = async() => {
+  const LastPaymentID = async () => {
     try {
       const response = await Fetchdata(
         "GET",
@@ -58,31 +45,27 @@ const AddPayment = () => {
       } else {
         setPaymentID(response.length + 1);
       }
+    } catch (err) {
+      OpenBox(err.message)
     }
-     catch(err) {
-      console.log(err.message);
-     }
-  }
-
-
-  const AddPaymentValues = {
-    InvoiceID : Data.InvoiceID,
-    // PaymentID : "",
-    PaymentAmmount : "",
-    AcceptedBy : "",
-    PaymentType : "",
-    Date: "",
-    Month: "",
-    Company: Data.CompanyName
   };
 
-
+  const AddPaymentValues = {
+    InvoiceID: Data.InvoiceID,
+    // PaymentID : "",
+    PaymentAmmount: "",
+    AcceptedBy: "",
+    PaymentType: "",
+    Date: "",
+    Month: "",
+    Company: Data.CompanyName,
+  };
 
   const formik = useFormik({
     initialValues: AddPaymentValues,
     validationSchema: PaymentSchema,
     onSubmit: (values) => {
-        // console.log(values);
+      // console.log(values);
       InsertPayment(values);
     },
   });
@@ -98,7 +81,7 @@ const AddPayment = () => {
               className="btn btn-primary rounded-0"
               onClick={() => Navigate("/services/payment/manage")}
             >
-               View Invoices
+              View Invoices
             </button>
           </div>
           <div>
@@ -130,10 +113,8 @@ const AddPayment = () => {
                       readOnly
                     />
                   </div>
-                   {formik.touched.InvoiceID && formik.errors.InvoiceID ? (
-                    <div className="text-danger">
-                      {formik.errors.InvoiceID}
-                    </div>
+                  {formik.touched.InvoiceID && formik.errors.InvoiceID ? (
+                    <div className="text-danger">{formik.errors.InvoiceID}</div>
                   ) : null}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
@@ -145,16 +126,9 @@ const AddPayment = () => {
                       className="form-control h-100 shadow-sm"
                       type="text"
                       value={PaymentID}
-                      // onChange={(e) => setPaymentID(e.target.value)}
                       readOnly
                     />
                   </div>
-
-                  {/* {formik.touched.CompanyName && formik.errors.CompanyName ? (
-                    <div className="text-danger">
-                      {formik.errors.CompanyName}
-                    </div>
-                  ) : null} */}
                 </div>
               </div>
               <div className="row d-flex flex-wrap col-12 mt-2">
@@ -199,16 +173,15 @@ const AddPayment = () => {
                       value={formik.values.PaymentAmmount}
                     />
                   </div>
-                  {formik.touched.PaymentAmmount && formik.errors.PaymentAmmount ? (
+                  {formik.touched.PaymentAmmount &&
+                  formik.errors.PaymentAmmount ? (
                     <div className="text-danger">
                       {formik.errors.PaymentAmmount}
                     </div>
                   ) : null}
                 </div>
               </div>
-             
-              
-              
+
               <div className="row d-flex flex-wrap col-12 mt-2">
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
@@ -223,11 +196,8 @@ const AddPayment = () => {
                       value={formik.values.Date}
                     />
                   </div>
-                  {formik.touched.Date &&
-                  formik.errors.Date ? (
-                    <div className="text-danger">
-                      {formik.errors.Date}
-                    </div>
+                  {formik.touched.Date && formik.errors.Date ? (
+                    <div className="text-danger">{formik.errors.Date}</div>
                   ) : null}
                 </div>
                 <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
@@ -243,11 +213,8 @@ const AddPayment = () => {
                       value={formik.values.Month}
                     />
                   </div>
-                  {formik.touched.Month &&
-                  formik.errors.Month ? (
-                    <div className="text-danger">
-                      {formik.errors.Month}
-                    </div>
+                  {formik.touched.Month && formik.errors.Month ? (
+                    <div className="text-danger">{formik.errors.Month}</div>
                   ) : null}
                 </div>
               </div>
@@ -266,8 +233,7 @@ const AddPayment = () => {
                       value={formik.values.AcceptedBy}
                     />
                   </div>
-                  {formik.touched.AcceptedBy &&
-                  formik.errors.AcceptedBy ? (
+                  {formik.touched.AcceptedBy && formik.errors.AcceptedBy ? (
                     <div className="text-danger">
                       {formik.errors.AcceptedBy}
                     </div>
@@ -288,17 +254,11 @@ const AddPayment = () => {
                       readOnly
                     />
                   </div>
-                  {formik.touched.Company &&
-                  formik.errors.Company ? (
-                    <div className="text-danger">
-                      {formik.errors.Company}
-                    </div>
+                  {formik.touched.Company && formik.errors.Company ? (
+                    <div className="text-danger">{formik.errors.Company}</div>
                   ) : null}
                 </div>
               </div>
-
-          
-
 
               <div className="m-5 text-center">
                 {/* {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>} */}
@@ -309,18 +269,16 @@ const AddPayment = () => {
                   Submit
                 </button>
               </div>
-
-              
             </div>
           </div>
         </form>
       </div>
       <dialog
-                className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-                id="dialog"
-              >
-                <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-              </dialog>
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+      </dialog>
     </>
   );
 };

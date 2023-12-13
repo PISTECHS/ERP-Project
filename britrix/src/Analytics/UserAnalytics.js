@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {handelOpenModelBox, handelCloseModelBox} from "../Component/ComponentElement/BoxModel";
 import Fetchdata from "../Component/FetchData";
 import { useNavigate } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const UserAnalytics = () => {
       if (response.length < 1) {
         setMes("No Record Found");
         setCardDisplay("d-none");
-        handelOpenModelBox();
+        handelOpenModelBox("dialog");
       } else {
         setCardDisplay("d-none");
         setData(response);
@@ -42,7 +42,7 @@ const UserAnalytics = () => {
     } catch (err) {
       setCardDisplay("d-none");
       setMes(err.message);
-      handelOpenModelBox();
+      handelOpenModelBox("dialog");
       console.error(err);
     }
   };
@@ -51,13 +51,13 @@ const UserAnalytics = () => {
     setFilterData(Data);
     setSelectedEmp(selected_user);
     var userTasks = [];
-    if (SelectMonth) {
-      userTasks = [...FilterData].filter(
+    if (SelectMonth && selected_user) {
+      userTasks = [...Data].filter(
         (task) =>
           task.TaskAllocation === selected_user && task.Month === SelectMonth
       );
     } else {
-      userTasks = [...FilterData].filter(
+      userTasks = [...Data].filter(
         (task) => task.TaskAllocation === selected_user
       );
     }
@@ -85,18 +85,7 @@ const UserAnalytics = () => {
     // console.log(taskCounts);
     setEmpData(taskCounts);
   };
-
   
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  };
 
   return (
     <>
@@ -158,7 +147,7 @@ const UserAnalytics = () => {
           className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
           id="dialog"
         >
-          <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+          <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
         </dialog>
 
         <div className="body d-flex m-2 justify-content-center">

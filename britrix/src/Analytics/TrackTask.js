@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../Component/FetchData";
 import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../Component/ComponentElement/BoxModel";
 
 
 const TrackTask = () => {
@@ -46,32 +46,28 @@ const TrackTask = () => {
       ];
       return EleKeys
   }
+
   const GetTaskList = async () => {
     try {
       const response = await Fetchdata(
         "GET",
         "http://localhost:8080/GetTaskList"
       );
-      // console.log(response);
       if (response.length < 1) {
-        console.log(response);
           setMes("No Record Found");
-        setCardDisplay("d-none");
-          handelOpenModelBox();
+          setCardDisplay("d-none");
+          handelOpenModelBox("dialog")
       } else {
-        console.log(response);
+        // console.log(response);
         setCardDisplay("d-none");
-
         setData(response);
-
         let EleKeys = CreateValueObj(response)
-
         setFilterData(EleKeys);
       }
     } catch (err) {
       setCardDisplay("d-none");
       setMes(err.message);
-      handelOpenModelBox();
+      handelOpenModelBox("dialog")
       console.error(err);
     }
   };
@@ -93,19 +89,15 @@ const TrackTask = () => {
     setFilterData(EleKeys)
   }
 
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  };
-
   
   return (
     <>
+    <dialog
+          className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+          id="dialog"
+        >
+          <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+        </dialog>
       <div className="main">
         <div className="head d-flex justify-content-around m-3 flex-wrap">
           <div>
@@ -226,12 +218,7 @@ const TrackTask = () => {
         <div className={`${CardDisplay} justify-content-center`}>
           <LoadingSpinner />
         </div>
-        <dialog
-          className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-          id="dialog"
-        >
-          <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-        </dialog>
+        
       </div>
     </>
   );

@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../Component/ComponentElement/BoxModel";
 import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
-
-
 
 const ManagePayment = () => {
   useEffect(() => {
     GetPaymentList();
   }, []);
 
-
+  const [Data, setData] = useState([])
   const [FilterData, setFilterData] = useState([])
   const [Mes, setMes] = useState('')
   const [Display, setDisplay]  = useState('flex');
   const Navigate = useNavigate();
+
+
+  const OpenBox = (value) => {
+    setMes("")
+     if(typeof value === 'string'){
+      setMes(value);
+      handelOpenModelBox("dialog");
+      setDisplay("none");
+     }else{
+      setData(value);
+      setFilterData(value);
+      setDisplay("none");
+     }
+  }
 
   const GetPaymentList = async () => {
     try {
@@ -24,24 +36,14 @@ const ManagePayment = () => {
         "http://localhost:8080/registerpaymentlist"
       );
       if (response.length < 1) {
-        setMes("No Record Found");
-        setDisplay("none");
-        handelOpenModelBox();
+        OpenBox("No Record Found")
       } else {
-        // console.log(response);
-        setFilterData(response);
-        // setData(response);
-        setDisplay("none");
+        OpenBox(response)
       }
     } catch (err) {
-    //   console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
-      setDisplay("none");
+      OpenBox(err.message)
     }
   };
-
- 
 
   const handleDeleteFunc = async (InvoiceID) => {
     try {
@@ -50,28 +52,12 @@ const ManagePayment = () => {
         "http://localhost:8080/deleteinvoice",
         { InvoiceID }
       );
-    //   console.log(response.mes);
-      setMes(response.mes);
-      // setDisplay("flex");
-      handelOpenModelBox();
-      GetPaymentList()
+      OpenBox(response.mes)
       
     } catch (err) {
-        setMes(err.message);
-        handelOpenModelBox();
+        OpenBox(err.message)
     }
   };
-
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
 
 
   return (
@@ -103,7 +89,7 @@ const ManagePayment = () => {
         className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
         id="dialog"
       >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
       </dialog>
       <div className="d-flex">
         <table className="table shadow-sm  table-bordered m-3">

@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { RegisterUserSchema } from "../ValidationSchemas";
 import Fetchdata from "../../Component/FetchData";
-import { useNavigate } from "react-router-dom";
 import BoxModel from "../../Component/ComponentElement/BoxModel";
 
 function RegisterUser() {
   const [Mes, setMes] = useState("");
   const [UserID, setUserID] = useState("");
   const [FieldList, setFieldList] = useState([]);
-  const Navigate = useNavigate();
+
 
   useEffect(() => {
     runProject();
@@ -268,11 +267,8 @@ function RegisterUser() {
                       <option className="dropdown-item" value="">
                         --Choose an option--
                       </option>
-                      <option className="dropdown-item" value="Developer">
-                        Developer
-                      </option>
-                      <option className="dropdown-item" value="GraphicDesigner">
-                        Designer
+                      <option className="dropdown-item" value="Employee">
+                        Employee
                       </option>
                       <option className="dropdown-item" value="HR">
                         HR
@@ -280,13 +276,9 @@ function RegisterUser() {
                       <option className="dropdown-item" value="Manager">
                         Manager
                       </option>
-                      
-                      <option
-                              className="dropdown-item"
-                              value="Manager"
-                            >
-                              Finance
-                            </option>
+                      <option className="dropdown-item" value="Finance">
+                        Finance
+                      </option>
                     </select>
                   </div>
                   {formik.touched.EmpPosition && formik.errors.EmpPosition ? (
@@ -324,7 +316,6 @@ function RegisterUser() {
                 </div>
               </div>
               <div className="m-5 text-center">
-                
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"

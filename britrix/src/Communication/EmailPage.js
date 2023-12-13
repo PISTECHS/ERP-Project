@@ -16,6 +16,7 @@ const EmailPage = () => {
     let response = await Fetchdata("POST", "http://localhost:8080/sendemail",{
       ...obj 
     });
+    console.log(response);
   };
 
   const EmailPageValues = {

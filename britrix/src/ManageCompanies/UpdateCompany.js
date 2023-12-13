@@ -3,20 +3,21 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import { CompanySchema } from "../TaskManagement/ValidationSchemas";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {
+  handelCloseModelBox,
+  handelOpenModelBox,
+} from "../Component/ComponentElement/BoxModel";
 
 const UpdateCompany = () => {
-
   useEffect(() => {
-     setCompanyID(Data.CompanyID)
-  }, [])
-  
+    setCompanyID(Data.CompanyID);
+  }, []);
 
   const [CompanyID, setCompanyID] = useState(0);
-  const [Mes, setMes] = useState('')
+  const [Mes, setMes] = useState("");
   const Navigate = useNavigate();
-  const Location = useLocation()
-  const Data = Location.state
+  const Location = useLocation();
+  const Data = Location.state;
 
   const updateCompany = async (obj) => {
     try {
@@ -26,25 +27,15 @@ const UpdateCompany = () => {
         { ...obj, CompanyID }
       );
       setMes(resp.mes);
-      handelOpenModelBox();
+      handelOpenModelBox("dialog");
     } catch (err) {
       setMes(err.message);
-      handelOpenModelBox();
+      handelOpenModelBox("dialog");
     }
   };
 
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
-
   const AddCompanyValues = {
-    ...Data
+    ...Data,
   };
 
   const formik = useFormik({
@@ -57,6 +48,12 @@ const UpdateCompany = () => {
   });
   return (
     <>
+      <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+      </dialog>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div>
           <h3>Update Company</h3>
@@ -242,23 +239,12 @@ const UpdateCompany = () => {
                   Update
                 </button>
               </div>
-
-              
             </div>
           </div>
         </form>
       </div>
-      <dialog
-                className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-                id="dialog"
-              >
-                <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-              </dialog>
     </>
   );
 };
 
-
-
-
-export default UpdateCompany
+export default UpdateCompany;

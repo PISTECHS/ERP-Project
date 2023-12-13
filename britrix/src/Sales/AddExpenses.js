@@ -3,8 +3,7 @@ import { useFormik } from "formik";
 import Fetchdata from "../Component/FetchData";
 import { useNavigate } from "react-router-dom";
 import { ExpenseSchema } from "../TaskManagement/ValidationSchemas";
-import BoxModel from "../Component/ComponentElement/BoxModel";
-
+import BoxModel, {handelOpenModelBox, handelCloseModelBox} from "../Component/ComponentElement/BoxModel";
 
 function AddExpenses() {
   useEffect(() => {
@@ -14,51 +13,46 @@ function AddExpenses() {
   const [ExpenseID, setExpenseID] = useState("E00");
   const Navigate = useNavigate();
 
-  const GetExpenseID  = async() => {
-    setMes('')
-     try{
-      const resp = await Fetchdata('GET',"http://localhost:8080/GetLastExpenseID")
-      if(resp.length>0){
-        setExpenseID(resp[0].ID + 1)
-      }else{
-        setExpenseID(resp.length + 1)
-      } 
-     }
-     catch(err){
-      setMes(err.message)
-        handelOpenModelBox()
-     }
+
+  const OpenBox = (value) => {
+    setMes("")
+     if(typeof value === 'string'){
+      setMes(value);
+      handelOpenModelBox("dialog");
+     } 
   }
-  
 
-
-
-
-    const SubmitExpense = async(obj) => {
-    let OBJ = {...obj, ID:ExpenseID}
-    // console.log(OBJ);
-      setMes('')
-      try {
-        const response = await Fetchdata("post", "http://localhost:8080/AddExpense", OBJ);
-         setMes(response.mes)
-         handelOpenModelBox()
-      } catch (error) {
-        setMes(error.message)
-         handelOpenModelBox()
+  const GetExpenseID = async () => {
+    setMes("");
+    try {
+      const resp = await Fetchdata(
+        "GET",
+        "http://localhost:8080/GetLastExpenseID"
+      );
+      if (resp.length > 0) {
+        setExpenseID(resp[0].ID + 1);
+      } else {
+        setExpenseID(resp.length + 1);
       }
+    } catch (err) {
+      OpenBox(err.message)
     }
+  };
 
-
-    
- const handelOpenModelBox = () => {
-  let dialogElem = document.getElementById("dialog");
-  dialogElem.showModal();
-};
-
-const handelCloseModelBox = () => {
-  let dialogElem = document.getElementById("dialog");
-  dialogElem.close();
-};
+  const SubmitExpense = async (obj) => {
+    let OBJ = { ...obj, ID: ExpenseID };
+    setMes("");
+    try {
+      const response = await Fetchdata(
+        "post",
+        "http://localhost:8080/AddExpense",
+        OBJ
+      );
+      OpenBox(response.mes)
+    } catch (error) {
+      OpenBox(error.message)
+    }
+  };
 
   const AddExpenseValues = {
     ExpenseName: "",
@@ -73,8 +67,8 @@ const handelCloseModelBox = () => {
     initialValues: AddExpenseValues,
     validationSchema: ExpenseSchema,
     onSubmit: (values) => {
-    //   console.log(values);
-      SubmitExpense(values)
+      //   console.log(values);
+      SubmitExpense(values);
     },
   });
   return (
@@ -90,7 +84,7 @@ const handelCloseModelBox = () => {
               <div>
                 <button
                   className="btn btn-danger rounded-0"
-                  onClick={() => Navigate('/services/expenses')}
+                  onClick={() => Navigate("/services/expenses")}
                 >
                   Expense List
                 </button>
@@ -225,7 +219,7 @@ const handelCloseModelBox = () => {
               </div>
 
               <div className="row d-flex flex-wrap col-12 mt-2">
-              <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
                     <h6 className="h6 mt-2">Add By</h6>
                   </div>
@@ -239,15 +233,13 @@ const handelCloseModelBox = () => {
                     />
                   </div>
                   {formik.touched.AddBy && formik.errors.AddBy ? (
-                    <div className="text-danger">
-                      {formik.errors.AddBy}
-                    </div>
+                    <div className="text-danger">{formik.errors.AddBy}</div>
                   ) : null}
                 </div>
               </div>
-              
+
               <div className="m-5 text-center">
-                {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>}
+                {/* {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>} */}
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"
@@ -260,11 +252,11 @@ const handelCloseModelBox = () => {
         </form>
       </div>
       <dialog
-                className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-                id="dialog"
-              >
-                <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-              </dialog>
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={handelCloseModelBox("dialog")} />
+      </dialog>
     </>
   );
 }

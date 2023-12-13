@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
 import LoadingSticks from "../../Component/ComponentElement/LoadingSticks";
-import BoxModel from "../../Component/ComponentElement/BoxModel";
+import BoxModel, {
+  handelOpenModelBox,
+  handelCloseModelBox,
+} from "../../Component/ComponentElement/BoxModel";
 
 const ManageTask = () => {
   useEffect(() => {
@@ -15,32 +18,35 @@ const ManageTask = () => {
   const [CardDisplay, setCardDisplay] = useState("flex");
   const [ProjectList, setProjectList] = useState([]);
 
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+      setCardDisplay("none");
+    } else {
+      setCardDisplay("none");
+    }
+  };
+
   const TaskProjectlist = async () => {
     try {
       const response = await Fetchdata(
         "GET",
         "http://localhost:8080/TaskProjectlist"
       );
-      //   console.log(response);
       if (response.length < 1) {
-        setCardDisplay("none");
-        setMes("No Record Found");
-        handelOpenModelBox();
+        OpenBox("No Record Found");
       } else {
         setProjectList(response);
-        // setfilterProjects(response);
-        // console.log(response);
         setCardDisplay("none");
         const uniqueProjectFields = [
           ...new Set(response.map((item) => item.ProjectField)),
         ];
-        // console.log(uniqueProjectFields);
         setTaskField(uniqueProjectFields);
       }
     } catch (err) {
-      setCardDisplay("none");
-      setMes(err.message);
-      handelOpenModelBox();
+      OpenBox(err.message);
     }
   };
 
@@ -49,16 +55,6 @@ const ManageTask = () => {
     Navigate("/services/task/create", {
       state: { ProjectField: value, Obj: filter },
     });
-  };
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
   };
 
   return (
@@ -83,7 +79,7 @@ const ManageTask = () => {
         className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
         id="dialog"
       >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
       </dialog>
       {/* Task Projects */}
       <div

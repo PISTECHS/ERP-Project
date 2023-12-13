@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { RegisterTaskSchema } from "../ValidationSchemas";
 import Fetchdata from "../../Component/FetchData";
 import { useNavigate, useLocation } from "react-router-dom";
-import BoxModel from "../../Component/ComponentElement/BoxModel";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../../Component/ComponentElement/BoxModel";
 
 
 
@@ -16,21 +16,22 @@ function RegisterTask() {
   const [TaskID, setTaskID] = useState()
   const Navigate = useNavigate();
   const Location = useLocation();
-
-
   const [ProjectList, setProjectList] = useState([]);
   const [UserList, setUserList] = useState([]);
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+    } 
+  };
 
   const MainRun = async () => {
     await TaskUsers();
     setProjectList(Location.state.Obj);
     const task_id = await Fetchdata('GET', 'http://localhost:8080/GetLastTaskID')
     if(task_id){
-      // if(task_id.length>0){
-      //   setTaskID(task_id.length)
-      // }else{
-      //   setTaskID(1)
-      // }
       let id = task_id.length
       if(id>0){
         setTaskID(id+1)
@@ -48,17 +49,27 @@ function RegisterTask() {
         "http://localhost:8080/TaskUsers",
         { Field: Location.state.ProjectField }
       );
-      // console.log(response);
       setUserList(response);
     } catch (error) {
-      setMes(error.message);
-      handelOpenModelBox()
+      OpenBox(error.message);
     }
   };
 
-  const AddTask = async (obj) => {
+  // const TaskUsers = async () => {
+  //   setMes("");
+  //   try {
+  //     const response = await Fetchdata(
+  //       "post",
+  //       "http://localhost:8080/TaskUsers",
+  //       { Field: Location.state.ProjectField }
+  //     );
+  //     setUserList(response);
+  //   } catch (error) {
+  //     OpenBox(error.message);
+  //   }
+  // };
 
-    // console.log(obj);
+  const AddTask = async (obj) => {
     setMes("");
     try {
       const response = await Fetchdata(
@@ -66,23 +77,41 @@ function RegisterTask() {
         "http://localhost:8080/RegisterTask",
         {...obj, TaskID}
       );
-      setMes(response.mes);
-      handelOpenModelBox()
+      OpenBox(response.mes);
     } catch (error) {
-      setMes(error.message);
-      handelOpenModelBox()
+      OpenBox(error.message);
     }
   };
 
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
+  // const AddTask = async (obj) => {
 
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
+  //   // console.log(obj);
+  //   setMes("");
+  //   try {
+  //     const response = await Fetchdata(
+  //       "post",
+  //       "http://localhost:8080/RegisterTask",
+  //       {...obj, TaskID}
+  //     );
+  //     // setMes(response.mes);
+  //     // handelOpenModelBox()
+  //     OpenBox(response.mes);
+  //   } catch (error) {
+  //     // setMes(error.message);
+  //     // handelOpenModelBox()
+  //     OpenBox(error.message);
+  //   }
+  // };
+
+  // const handelOpenModelBox = () => {
+  //   let dialogElem = document.getElementById("dialog");
+  //   dialogElem.showModal();
+  // }
+
+  // const handelCloseModelBox = () => {
+  //   let dialogElem = document.getElementById("dialog");
+  //   dialogElem.close();
+  // }
 
   
 
@@ -118,7 +147,7 @@ function RegisterTask() {
       
       <div className="conatainer m-4">
       <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
-           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+           <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
        </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div className="card shadow-lg rounded-0 m-3 p-4">

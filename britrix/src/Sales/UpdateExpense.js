@@ -1,48 +1,53 @@
-import React, { useState } from 'react'
-
-import { useLocation, useNavigate } from 'react-router-dom'
-
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import Fetchdata from '../Component/FetchData';
-import { ExpenseSchema } from '../TaskManagement/ValidationSchemas';
+import Fetchdata from "../Component/FetchData";
+import { ExpenseSchema } from "../TaskManagement/ValidationSchemas";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../Component/ComponentElement/BoxModel";
+
 
 const UpdateExpense = () => {
+  const [Mes, setMes] = useState("");
+  const location = useLocation();
+  const Naviagte = useNavigate();
 
-  const [Mes, setMes] = useState('')
-  const location= useLocation()
-  const Naviagte = useNavigate()
-
-  const UpdateData = async(obj) => {
-    // console.log(obj);
-     setMes('')
-     try{
-      let response = await Fetchdata("post", "http://localhost:8080/UpdateExpenses", obj)
+  const UpdateData = async (obj) => {
+    setMes("");
+    try {
+      let response = await Fetchdata(
+        "post",
+        "http://localhost:8080/UpdateExpenses",
+        obj
+      );
       console.log(response);
-       setMes(response.mes)
-     }
-     catch(err){
-      console.log(err.message);
-     }
-    
-  }
-
-  
-
-  const ExpensesValues = {
-    ...location.state
+      setMes(response.mes);
+      handelOpenModelBox("dialog");
+    } catch (err) {
+      setMes(err.message);
+      handelOpenModelBox("dialog");
+    }
   };
 
- 
+  const ExpensesValues = {
+    ...location.state,
+  };
+
   const formik = useFormik({
     initialValues: ExpensesValues,
     validationSchema: ExpenseSchema,
     onSubmit: (values) => {
-      UpdateData(values)
+      UpdateData(values);
     },
   });
   return (
     <>
-     <div className="conatainer m-4">
+      <div className="conatainer m-4">
+        <dialog
+          className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+          id="dialog"
+        >
+          <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+        </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div className="card shadow-lg rounded-0 m-3 p-4">
             <div className=" d-flex flex-wrap col-12 m-3 justify-content-between">
@@ -53,7 +58,7 @@ const UpdateExpense = () => {
               <div>
                 <button
                   className="btn btn-danger rounded-0"
-                  onClick={() => Naviagte('/services/expenses')}
+                  onClick={() => Naviagte("/services/expenses")}
                 >
                   Expense List
                 </button>
@@ -189,7 +194,7 @@ const UpdateExpense = () => {
               </div>
 
               <div className="row d-flex flex-wrap col-12 mt-2">
-              <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
+                <div className="col-12 col-lg-6 mt-1 d-flex flex-wrap">
                   <div className="col-lg-4 col-12">
                     <h6 className="h6 mt-2">Add By</h6>
                   </div>
@@ -203,15 +208,12 @@ const UpdateExpense = () => {
                     />
                   </div>
                   {formik.touched.AddBy && formik.errors.AddBy ? (
-                    <div className="text-danger">
-                      {formik.errors.AddBy}
-                    </div>
+                    <div className="text-danger">{formik.errors.AddBy}</div>
                   ) : null}
                 </div>
               </div>
-              
+
               <div className="m-5 text-center">
-                {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>}
                 <button
                   className="btn btn-primary border-0 shadow-sm rounded-0"
                   type="submit"
@@ -225,6 +227,6 @@ const UpdateExpense = () => {
       </div>
     </>
   );
-}
+};
 
-export default UpdateExpense
+export default UpdateExpense;

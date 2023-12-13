@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Fetchdata from "../Component/FetchData";
 import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel,{handelOpenModelBox, handelCloseModelBox} from "../Component/ComponentElement/BoxModel";
 
 
 const ViewPayment = () => {
@@ -19,7 +19,19 @@ const ViewPayment = () => {
   const location = useLocation();
   const Data = location.state;
 
-  const GetPaymentRecord = async () => {
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+      setDisplay("none");
+    } else {
+      setDisplay("none");
+    }
+  };
+
+   const GetPaymentRecord = async () => {
     try {
       const resp = await Fetchdata(
         "POST",
@@ -27,26 +39,18 @@ const ViewPayment = () => {
         { InvoiceID: Data.InvoiceID }
       );
       if (resp.length < 1) {
-        setMes("No Record Found");
-        setDisplay("none");
-        handelOpenModelBox();
+        OpenBox("No Record Found")
       } else {
-        // console.log(resp);
-        // setMes(resp.mes);
         setPaymentRecord(resp)
         setDisplay("none");
         const totalPayment = [...resp].reduce((total, nextammount) => {
             return total + parseInt(nextammount.PaymentAmmount, 10);
         }, 0)
-        // setFilterPaymentRecord(resp)
         setRecoverAmount(totalPayment)
       }
      
     } catch (err) {
-      console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
-      setDisplay("none");
+      OpenBox(err.message)
     }
   };
 
@@ -57,27 +61,13 @@ const ViewPayment = () => {
         "http://localhost:8080/deletepayment",
         { PaymentID}
       );
-      setMes(resp.mes);
-      handelOpenModelBox();
+      OpenBox(resp.mes);
       GetPaymentRecord()
     }
     catch (err) {
-      console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
-      setDisplay("none");
+      OpenBox(err.message);
     }
   }
-  
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  };
 
   return (
     <>
@@ -85,7 +75,7 @@ const ViewPayment = () => {
         className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
         id="dialog"
       >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
       </dialog>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div className="d-flex gap-2 flex-wrap m-1">

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import Fetchdata from "../../Component/FetchData";
-import { useNavigate } from "react-router-dom";
 import { RegisterFieldSchema } from "../ValidationSchemas";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../../Component/ComponentElement/BoxModel";
+
 
 function ManageField() {
   useEffect(() => {
@@ -10,18 +11,27 @@ function ManageField() {
   }, []);
 
   const [Data, setData] = useState([]);
-  const [FilterData, setFilterData] = useState([]);
   const [Mes, setMes] = useState('');
-  const Navigate = useNavigate();
   const [ID, setID] = useState("0");
   const [Display, setDisplay] = useState("flex");
-  
-
 
   const runFunction = async () => {
     await GetFieldList();
     await LastID();
   };
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+      setDisplay('none')
+    } else {
+      setData(value); 
+      setDisplay('none')
+    }
+  };
+
   const LastID = async () => {
     setMes("");
     try {
@@ -29,93 +39,59 @@ function ManageField() {
         "GET",
         "http://localhost:8080/GetLastFieldID"
       );
-      // console.log(resp.length);
       if (resp.length > 0) {
         setID(resp[0].ID + 1);
       } else {
         setID(resp.length + 1);
       }
     } catch (err) {
-      console.log(err.message);
-      
+      OpenBox(err.message);
     }
   };
-
+  
   const GetFieldList = async () => {
     try {
       const response = await Fetchdata(
         "GET",
         "http://localhost:8080/FieldList"
       );
-      //   console.log(response);
-
       if (response.length < 1) {
-        setDisplay("none");
-        setMes("No Record Found");
-        // showModelEle()
+        OpenBox("No Record Found");
       } else {
-        setDisplay("none");
-        setData(response);
-        // console.log(response);
+        OpenBox(response)
       }
     } catch (err) {
-      setDisplay("none");
-      setMes(err.message);
-      // showModelEle()
+      OpenBox(err.message);
     }
   };
 
-  
   const handleDeleteField = async (ID) => {
-    setDisplay('flex')
-    setMes("");
     try {
       const response = await Fetchdata(
         "post",
         "http://localhost:8080/DeleteField",
         { ID }
       );
-      setDisplay('none')
-      setMes(response.mes);
-      showModelEle()
+      OpenBox(response.mes);
       runFunction();
     } catch (error) {
-      setDisplay('none')
-      setMes(error.message);
-      showModelEle()
+      OpenBox(error.message);
     }
   };
 
   const handleAddField = async (obj) => {
-    // console.log({...obj,ID});
-    setDisplay("flex");
-    setMes("");
     try {
       const response = await Fetchdata(
         "post",
         "http://localhost:8080/AddField",
         { ...obj, ID }
       );
-      setDisplay("none");
-      setMes(response.mes);
-      showModelEle()
+      OpenBox(response.mes);
       runFunction();
     } catch (error) {
-      setDisplay("none");
-      setMes(error.message);
-      showModelEle()
+      OpenBox(error.message);
     }
   };
-
-  const showModelEle = () => {
-    const dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-  
-  const handleCloseMondel = () => {
-    const dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
 
   const RegisterFieldValues = {
     FieldName: "",
@@ -140,18 +116,7 @@ function ManageField() {
         className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
         id="dialog"
       >
-        <div className="modal-content ">
-          <div className="text-center">
-            <div>
-              <h5 className="h5">{Mes}</h5>
-            </div>
-            <div>
-              <button className="btn btn-info" onClick={handleCloseMondel}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+         <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
       </dialog>
       <form onSubmit={formik.handleSubmit}>
         <div className="d-flex flex-wrap justify-content-center text-center">

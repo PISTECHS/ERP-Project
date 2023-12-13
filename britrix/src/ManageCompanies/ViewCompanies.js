@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {
+  handelCloseModelBox,
+  handelOpenModelBox,
+} from "../Component/ComponentElement/BoxModel";
 import LoadingSpinner from "../Component/ComponentElement/LoadingSpinner";
-
 
 const ViewCompanies = () => {
   useEffect(() => {
@@ -14,63 +16,59 @@ const ViewCompanies = () => {
   const [Data, setData] = useState([]);
   const [FilterData, setFilterData] = useState([]);
   const [Mes, setMes] = useState();
-  const [Display, setDisplay]  = useState('flex');
+  const [Display, setDisplay] = useState("flex");
 
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+      setDisplay('none')
+    } else {
+      setData(value);
+      setFilterData(value);
+      setDisplay('none')
+    }
+  };
 
-  const GetCompanyList = async () => {
+   const GetCompanyList = async () => {
     try {
       const response = await Fetchdata(
         "GET",
         "http://localhost:8080/registercompanylist"
       );
       if (response.length < 1) {
-        setMes("No Record Found");
-        setDisplay("none");
-        handelOpenModelBox();
+        OpenBox("No Record Found")
       } else {
-        setFilterData(response);
-        setData(response);
-        setDisplay("none");
+        OpenBox(response)
       }
     } catch (err) {
-        // console.log(err.message);
-        setMes(err.message);
-        handelOpenModelBox();
-        setDisplay("none");
+        OpenBox(err.message)
     }
   };
 
-  const handleDeleteFunc = async (CompanyID) => {
+
+   const handleDeleteFunc = async (CompanyID) => {
     try {
       const response = await Fetchdata(
         "POST",
         "http://localhost:8080/deletecompany",
         { CompanyID }
       );
-    //   console.log(response.mes);
-      setMes(response.mes);
-      // setDisplay("flex");
-      handelOpenModelBox();
+      OpenBox(response.mes)
     } catch (err) {
-        setMes(err.message);
-        handelOpenModelBox();
+        OpenBox(err.message)
     }
   };
 
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
-
-
   return (
     <>
+    <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+      </dialog>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div>
           <h3>Companies List</h3>
@@ -94,13 +92,6 @@ const ViewCompanies = () => {
           </div>
         </div>
       </div>
-      <dialog
-        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-        id="dialog"
-      >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-      </dialog>
-
       <div className="d-flex">
         <table className="table shadow-sm  table-bordered m-3">
           <thead className="table-light text-center " key={"thead"}>
@@ -157,7 +148,9 @@ const ViewCompanies = () => {
                           <button
                             className="btn btn-outline-primary p-1 m-1 rounded-0"
                             onClick={() =>
-                              Navigate("/services/companies/update", { state: ele })
+                              Navigate("/services/companies/update", {
+                                state: ele,
+                              })
                             }
                           >
                             Update
@@ -169,15 +162,9 @@ const ViewCompanies = () => {
                 );
               })}
           </tbody>
-          
         </table>
-        
       </div>
-      <div
-        className={`d-${
-          Display
-        } justify-content-center`}
-      >
+      <div className={`d-${Display} justify-content-center`}>
         <LoadingSpinner />
       </div>
     </>

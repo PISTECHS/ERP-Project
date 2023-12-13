@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import { InvoiceSchema } from "../TaskManagement/ValidationSchemas";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {handelCloseModelBox, handelOpenModelBox} from "../Component/ComponentElement/BoxModel";
 
 const UpdateInvoice = () => {
   useEffect(() => {
@@ -13,10 +13,7 @@ const UpdateInvoice = () => {
 
   const Navigate = useNavigate();
   const [InvoiceID, setInvoiceID] = useState(0);
-  // const [FilterData, setFilterData] = useState([]);
-  // const [Data, setData] = useState([]);
   const [Mes, setMes] = useState("");
-  const [ProjectList, setProjectList] = useState([]);
   const Location= useLocation()
   const Data = Location.state
 
@@ -28,25 +25,12 @@ const UpdateInvoice = () => {
           { ...obj, InvoiceID }
         );
         setMes(resp.mes);
-        handelOpenModelBox();
+        handelOpenModelBox("dialog");
       } catch (err) {
         setMes(err.message);
-        handelOpenModelBox();
+        handelOpenModelBox("dialog");
       }
     };
-
-  
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  };
-
 
 
   const UpdateInvoiceValues = {
@@ -57,12 +41,17 @@ const UpdateInvoice = () => {
     initialValues: UpdateInvoiceValues,
     validationSchema: InvoiceSchema,
     onSubmit: (values) => {
-    
       updateinvoice(values);
     },
   });
   return (
     <>
+     <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+      </dialog>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div>
           <h3>Add Invoice</h3>
@@ -111,8 +100,6 @@ const UpdateInvoice = () => {
                     <h6 className="h6 mt-2">Company Name</h6>
                   </div>
                   <div className="col-lg-8 col-12">
-                   
-
                     <input
                       name="CompanyName"
                       className="form-control shadow-sm"
@@ -274,12 +261,7 @@ const UpdateInvoice = () => {
           </div>
         </form>
       </div>
-      <dialog
-        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-        id="dialog"
-      >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-      </dialog>
+     
     </>
   );
 };

@@ -19,13 +19,14 @@ const SendEmail = async(obj) => {
       };
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
+          // console.log(error);
+          return(error)
         } else {
           console.log('Email sent: ' + info.response);
+          return('mes send')
         }
       });
 
-   console.log('runs ..');
 
  
 

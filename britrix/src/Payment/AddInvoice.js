@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { InvoiceSchema } from "../TaskManagement/ValidationSchemas";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel,{handelOpenModelBox, handelCloseModelBox} from "../Component/ComponentElement/BoxModel";
 
 const AddInvoice = () => {
   useEffect(() => {
-    // GetProjectList();
-    MainRun()
+    MainRun();
   }, []);
 
   const Navigate = useNavigate();
@@ -18,12 +17,22 @@ const AddInvoice = () => {
   const [Mes, setMes] = useState("");
   const [ProjectList, setProjectList] = useState([]);
 
-  
-
   const MainRun = () => {
-    LastInvoiceID()
-    GetProjectList()
-  }
+    LastInvoiceID();
+    GetProjectList();
+  };
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+    } else {
+      setData(value);
+      setFilterData(value);
+    }
+  };
+
   const GetProjectList = async () => {
     try {
       const response = await Fetchdata(
@@ -31,74 +40,47 @@ const AddInvoice = () => {
         "http://localhost:8080/ProjectList"
       );
       if (response.length < 1) {
-        setMes(
-          <p>
-            No Project Found Kindly{" "}
-            <Link to={"/services/project/create"}>Add Project</Link>
-          </p>
-        );
-        handelOpenModelBox();
+        OpenBox("No Project Found");
       } else {
-        setFilterData(response);
-        setData(response);
+        OpenBox(response);
       }
     } catch (err) {
-      setMes(err.message);
-      handelOpenModelBox();
+      OpenBox(err.message);
     }
   };
-
-
-  const LastInvoiceID = async() => {
+  
+  const LastInvoiceID = async () => {
     try {
       const response = await Fetchdata(
         "GET",
         "http://localhost:8080/getlastinvoiceID"
       );
       if (response.length > 0) {
-       setInvoiceID(response[0].InvoiceID + 1);
+        setInvoiceID(response[0].InvoiceID + 1);
       } else {
         setInvoiceID(response.length + 1);
       }
-      // console.log(response);
+    } catch (err) {
+      OpenBox(err.message)
     }
-     catch(err) {
-      console.log(err.message);
-     }
-  }
+  };
 
-    const addInvoice = async (obj) => {
-      try {
-        const resp = await Fetchdata(
-          "POST",
-          "http://localhost:8080/addinvoice",
-          { ...obj, InvoiceID }
-        );
-        setMes(resp.mes);
-        handelOpenModelBox();
-      } catch (err) {
-        setMes(err.message);
-        handelOpenModelBox();
-      }
-    };
+  const addInvoice = async (obj) => {
+    try {
+      const resp = await Fetchdata("POST", "http://localhost:8080/addinvoice", {
+        ...obj,
+        InvoiceID,
+      });
+      OpenBox(resp.mes);
+    } catch (err) {
+      OpenBox(err.message)
+    }
+  };
 
   const handleProjects = (comp) => {
-   
-      const filterProjects = [...Data].filter((e) => e.Company === comp)
-      setProjectList(filterProjects)
-  }
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
+    const filterProjects = [...Data].filter((e) => e.Company === comp);
+    setProjectList(filterProjects);
   };
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  };
-
-
 
   const AddInvoiceValues = {
     // InvoiceID: "",
@@ -110,14 +92,14 @@ const AddInvoice = () => {
     Date: "",
     Month: "",
     SaleType: "",
-    AddBy: ""
+    AddBy: "",
   };
 
   const formik = useFormik({
     initialValues: AddInvoiceValues,
     validationSchema: InvoiceSchema,
     onSubmit: (values) => {
-    //   console.log(values);
+      //   console.log(values);
       addInvoice(values);
     },
   });
@@ -161,7 +143,7 @@ const AddInvoice = () => {
                       type="text"
                       name="ID"
                       value={InvoiceID}
-                        readOnly
+                      readOnly
                       onChange={(e) => setInvoiceID(e.target.value)}
                     />
                   </div>
@@ -171,18 +153,14 @@ const AddInvoice = () => {
                     <h6 className="h6 mt-2">Company Name</h6>
                   </div>
                   <div className="col-lg-8 col-12">
-                    {/* <input
-                      className="form-control h-100 shadow-sm"
-                      type="text"
-                      name="CompanyName"
-                      onChange={formik.handleChange}
-                      value={formik.values.CompanyName}
-                    /> */}
 
                     <select
                       name="CompanyName"
                       className="form-control shadow-sm"
-                      onChange={(e) => {formik.handleChange(e); handleProjects(e.target.value)}}
+                      onChange={(e) => {
+                        formik.handleChange(e);
+                        handleProjects(e.target.value);
+                      }}
                       value={formik.values.CompanyName}
                     >
                       <option className="dropdown-item" value=" ">
@@ -377,7 +355,7 @@ const AddInvoice = () => {
                     <h6 className="h6 mt-2">Sale Type</h6>
                   </div>
                   <div className="col-lg-8 col-12">
-                  <select
+                    <select
                       name="SaleType"
                       className="form-control shadow-sm"
                       onChange={formik.handleChange}
@@ -398,11 +376,7 @@ const AddInvoice = () => {
                     <div className="text-danger">{formik.errors.SaleType}</div>
                   ) : null}
                 </div>
-                
               </div>
-              
-
-              
 
               <div className="m-5 text-center">
                 {/* {Mes && <div className="border border-2 p-2 m-2">{Mes}</div>} */}
@@ -421,7 +395,7 @@ const AddInvoice = () => {
         className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
         id="dialog"
       >
-        <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
       </dialog>
     </>
   );

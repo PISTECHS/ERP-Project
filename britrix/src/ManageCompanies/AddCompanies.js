@@ -3,16 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { CompanySchema } from "../TaskManagement/ValidationSchemas";
 import Fetchdata from "../Component/FetchData";
-import BoxModel from "../Component/ComponentElement/BoxModel";
+import BoxModel, {
+  handelCloseModelBox,
+  handelOpenModelBox,
+} from "../Component/ComponentElement/BoxModel";
 
 const AddCompanies = () => {
+  
   useEffect(() => {
     GetCompanyID();
   }, []);
 
   const Navigate = useNavigate();
   const [CompanyID, setCompanyID] = useState(0);
-  const [Mes, setMes] = useState('')
+  const [Mes, setMes] = useState("");
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+    }
+  };
 
   const GetCompanyID = async () => {
     try {
@@ -26,9 +38,7 @@ const AddCompanies = () => {
         setCompanyID(resp.length + 1);
       }
     } catch (err) {
-      console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
+      OpenBox(err.message);
     }
   };
 
@@ -39,24 +49,11 @@ const AddCompanies = () => {
         "http://localhost:8080/registercomapny",
         { ...obj, CompanyID }
       );
-      setMes(resp.mes);
-      handelOpenModelBox();
+      OpenBox(resp.mes);
     } catch (err) {
-      console.log(err.message);
-      setMes(err.message);
-      handelOpenModelBox();
+      OpenBox(err.message);
     }
   };
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
 
   const AddCompanyValues = {
     CompanyName: "",
@@ -77,6 +74,12 @@ const AddCompanies = () => {
   });
   return (
     <>
+      <dialog
+        className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+        id="dialog"
+      >
+        <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
+      </dialog>
       <div className="head d-flex justify-content-between flex-wrap m-3">
         <div>
           <h3>Add Company</h3>
@@ -262,18 +265,10 @@ const AddCompanies = () => {
                   Submit
                 </button>
               </div>
-
-              
             </div>
           </div>
         </form>
       </div>
-      <dialog
-                className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
-                id="dialog"
-              >
-                <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
-              </dialog>
     </>
   );
 };

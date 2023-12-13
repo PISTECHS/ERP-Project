@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { RegisterProjectSchema } from "../ValidationSchemas";
 import { useNavigate, Link } from "react-router-dom";
 import Fetchdata from "../../Component/FetchData";
-import BoxModel from "../../Component/ComponentElement/BoxModel";
+import BoxModel, {handelOpenModelBox, handelCloseModelBox} from "../../Component/ComponentElement/BoxModel";
 
 function RegisterProject() {
   
@@ -22,53 +22,54 @@ function RegisterProject() {
     await GetFieldList()
     await GetCompanyList()
   }
-  const GetFieldList = async () => {
-    try {
-      const response = await Fetchdata("GET", "http://localhost:8080/FieldList");
-    //   console.log(response);
-      if(response.length<1){
-        setMes('No Field Found')
-        handelOpenModelBox()
-      }else{
-        setFieldList(response)
-        // console.log(response);
-      }
-    } catch (err) {
-      setMes(err.message)
+
+  const OpenBox = (value) => {
+    setMes("");
+    if (typeof value === "string") {
+      setMes(value);
+      handelOpenModelBox("dialog");
+    } else {
     }
   };
 
-  const LastID = async() => {
-     setMes('')
-     try{
-      const resp = await Fetchdata('GET',"http://localhost:8080/GetLastProjectID")
-      // console.log(resp.length);
-      if(resp.length>0){
-        setID(resp[0].ID + 1)
+  const GetFieldList = async () => {
+    try {
+      const response = await Fetchdata("GET", "http://localhost:8080/FieldList");
+      if(response.length<1){
+        OpenBox('No Field Found')
       }else{
-        setID(resp.length + 1)
-      } 
-     }
-     catch(err){
-      setMes(err.message)
-      
-      // console.log(err.message)
-     }
-  }
+        setFieldList(response)
+      }
+    } catch (err) {
+      OpenBox(err.message)
+    }
+  };
+  const LastID = async() => {
+    setMes('')
+    try{
+     const resp = await Fetchdata('GET',"http://localhost:8080/GetLastProjectID")
+     if(resp.length>0){
+       setID(resp[0].ID + 1)
+     }else{
+       setID(resp.length + 1)
+     } 
+    }
+    catch(err){
+     OpenBox(err.message)
+    }
+ }
 
   const AddProject = async(obj) => {
     setMes('')
     let OBJ = {...obj, ID}
     try {
       const response = await Fetchdata("post", "http://localhost:8080/AddProject", OBJ);
-       setMes(response.mes)
-       handelOpenModelBox()
+      OpenBox(response.mes)
     } catch (error) {
-      setMes(error.message)
-      handelOpenModelBox()
+      OpenBox(error.message)
     }
   }
-
+  
   const GetCompanyList = async () => {
     try {
       const response = await Fetchdata(
@@ -77,31 +78,14 @@ function RegisterProject() {
       );
       if (response.length < 1) {
         setMes(<p>No Company Founed Kindly <Link to={'/services/companies/add'}>Register Company</Link></p>);
-        // setDisplay("none");
-        handelOpenModelBox();
+        handelOpenModelBox("dialog");;
       } else {
-        // console.log(response);
         setCompanyList(response)
       }
     } catch (err) {
-        // console.log(err.message);
-        setMes(err.message);
-        handelOpenModelBox();
-       
+       OpenBox(err.message);
     }
   };
-
-
-  const handelOpenModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.showModal();
-  }
-
-  const handelCloseModelBox = () => {
-    let dialogElem = document.getElementById("dialog");
-    dialogElem.close();
-  }
-
    
   const RegisterProjectValues = {
     // ProjectID: '',
@@ -131,7 +115,7 @@ function RegisterProject() {
     <>
       <div className="conatainer m-4">
       <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
-           <BoxModel mes={Mes} closeFunc={handelCloseModelBox} />
+           <BoxModel mes={Mes} closeFunc={() => handelCloseModelBox("dialog")} />
        </dialog>
         <form onSubmit={formik.handleSubmit}>
           <div

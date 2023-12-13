@@ -3,12 +3,15 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import Fetchdata from "./Component/FetchData";
 import { useNavigate } from "react-router-dom";
+import { useUserRole } from "./UserRoleContext";
 
 const LoginPage = () => {
   const [Mes, setMes] = useState("");
   const Navigate = useNavigate();
-  // const dialogElem = document.getElementById("dialog");
- 
+  // const [userField, setuserField] = useState('')
+  const { setUserRole } = useUserRole();
+  
+  
 
 
   const handleLogin = async (obj) => {
@@ -20,27 +23,30 @@ const LoginPage = () => {
         "http://localhost:8080/userlogin",
         obj
       );
-      console.log(response);
+      // console.log(response);
       if (response.success === false) {
         setMes(response.mes);
-        handleOpen()
+        handleOpen();
       } else {
+        // console.log(response.mes);
+        setUserRole(obj.EmpEmail.split("@")[1].split(".")[0]);
+        localStorage.setItem('brtrixUsername' , obj.EmpEmail)
         Navigate("/");
       }
     } catch (error) {
       setMes(error.message);
-      handleOpen()
+      handleOpen();
       console.log(error.message);
     }
   };
 
   const handleOpen = () => {
-    let  dialogElem = document.getElementById("dialog");
+    let dialogElem = document.getElementById("dialog");
     dialogElem.showModal();
   };
 
   const handleClose = () => {
-    let  dialogElem = document.getElementById("dialog");
+    let dialogElem = document.getElementById("dialog");
     dialogElem.close();
   };
 
@@ -65,6 +71,7 @@ const LoginPage = () => {
 
   return (
     <>
+      {/* <GETUserRole value={userField ? userField : 'Login'} /> */}
       <div className="px-4 py-5 px-md-5 px-sm-6 text-center text-lg-start">
         <form onSubmit={formik.handleSubmit}>
           <div className="container d-flex justify-content-center p-3">
@@ -97,7 +104,6 @@ const LoginPage = () => {
                       type="password"
                       className="form-control shadow-sm"
                       name="EmpPass"
-                      
                       value={formik.values.EmpPass}
                       onChange={formik.handleChange}
                     />
@@ -107,14 +113,6 @@ const LoginPage = () => {
                   </div>
 
                   <div className="text-center">
-                   
-                    
-
-                    {/* <button className="btn btn-danger" onClick={handleOpen}>
-                      OPEN
-                    </button> */}
-                    
-                   
                     <button
                       type="submit"
                       className="btn btn-danger btn-block mb-4 p-2 ps-3 pe-3 shadow-sm border-0 rounded-0"
@@ -123,21 +121,31 @@ const LoginPage = () => {
                       Sign up
                     </button>
                   </div>
-                  <dialog className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm" id="dialog">
-                        <div className="modal-content ">
-                          <div className="text-center">
-                          <div><h5 className="h5">{Mes}</h5></div>
-                          <div><button className="btn btn-danger rounded-0" onClick={handleClose}>Close</button></div>
-                          </div>
+                  <dialog
+                    className=" col-lg-4 col-8 border-0 rounded-2 shadow-sm"
+                    id="dialog"
+                  >
+                    <div className="modal-content ">
+                      <div className="text-center">
+                        <div>
+                          <h5 className="h5">{Mes}</h5>
                         </div>
-                    </dialog>
+                        <div>
+                          <button
+                            className="btn btn-danger rounded-0"
+                            onClick={handleClose}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </dialog>
                 </div>
               </div>
             </div>
           </div>
-          
         </form>
-       
       </div>
     </>
   );

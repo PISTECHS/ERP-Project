@@ -10,6 +10,7 @@ function ServicesPage() {
         { Title: "Expense", subTitle: "Expense Record Management", url: '/services/expenses' },
         { Title: "Analytics", subTitle: "Report Performance tracking", url:'/analytics/manage' },
         { Title: "Customer", subTitle: " Support Self-Service Support" },
+        { Title: "Account", subTitle: "Update Account", url:"/updateuser"}
       ];
       return (
         <>

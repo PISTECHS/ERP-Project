@@ -19,4 +19,16 @@ const BoxModel = (props) => {
   );
 };
 
+
+const handelOpenModelBox = (id) => {
+  let dialogElem = document.getElementById(id);
+  dialogElem.showModal();
+};
+
+const handelCloseModelBox = (id) => {
+  let dialogElem = document.getElementById(id);
+  dialogElem.close();
+};
+
 export default BoxModel;
+export {handelOpenModelBox, handelCloseModelBox}

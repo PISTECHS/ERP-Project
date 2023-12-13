@@ -176,6 +176,8 @@ const DeleteTask = async (ConnectionFunc, TaskID) => {
   return result; 
 };
 
+
+
 const UpdateTaskRecord = async (Connection, obj) => {
   let filter = { TaskID: obj.TaskID };
   const result = await UpdateQuery( 
@@ -186,7 +188,10 @@ const UpdateTaskRecord = async (Connection, obj) => {
     obj 
   );  
   return result; 
-};
+}
+
+
+
 
 
 
